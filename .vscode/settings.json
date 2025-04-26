@@ -1,0 +1,15 @@
+{
+  "editor.tabSize": 2,
+  "files.associations": {
+    "iosfwd": "cpp",
+    "string": "cpp",
+    "chrono": "cpp",
+    "random": "cpp",
+    "limits": "cpp",
+    "semaphore": "cpp",
+    "algorithm": "cpp",
+    "iostream": "cpp",
+    "system_error": "cpp",
+    "thread": "cpp"
+  }
+}
