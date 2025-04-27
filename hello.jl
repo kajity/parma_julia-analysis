@@ -14,6 +14,5 @@ end
 @time println(a, "\n")
 
 println(pwd())
-parma = () -> ccall((:main, "./libsimple.so"), Cint, ())
-ret = parma()
-println(ret)
+parma = () -> @ccall "./build/libparma-main.so".main()::Cint
+println(parma())

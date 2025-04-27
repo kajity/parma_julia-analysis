@@ -7,6 +7,8 @@
 #include <sstream>
 #include <string>
 
+#include "config.h"
+
 #define ERROR_MESSAGE_NOEXIST(file_name) \
   namespace fs = std::filesystem;        \
   fs::path cwd = fs::current_path();     \
@@ -57,17 +59,17 @@ double getPowCpp(int ip, double d, double r)
     ifirst = 1;
     for (i = 0; i <= 7; i++) {
       if (i <= 2) {  // neutron, proton alpha
-        dname = "input/" + pname[i] + "/solar-dep.inp";
+        dname = MYLIB_DATADIR "/input/" + pname[i] + "/solar-dep.inp";
       } else if (i == 3) {
-        dname = "input/" + pname[i] + "/solar-dep-EL.inp";
+        dname = MYLIB_DATADIR "/input/" + pname[i] + "/solar-dep-EL.inp";
       } else if (i == 4) {
-        dname = "input/" + pname[i] + "/solar-dep-PO.inp";
+        dname = MYLIB_DATADIR "/input/" + pname[i] + "/solar-dep-PO.inp";
       } else if (i == 5) {
-        dname = "input/" + pname[i] + "/solar-dep-PH.inp";
+        dname = MYLIB_DATADIR "/input/" + pname[i] + "/solar-dep-PH.inp";
       } else if (i == 6) {
-        dname = "input/" + pname[i] + "/solar-dep.plus";
+        dname = MYLIB_DATADIR "/input/" + pname[i] + "/solar-dep.plus";
       } else if (i == 7) {
-        dname = "input/" + pname[i] + "/solar-dep.mins";
+        dname = MYLIB_DATADIR "/input/" + pname[i] + "/solar-dep.mins";
       }
       std::ifstream ifs(dname, std::ios::in);
       if (!ifs) {
@@ -83,7 +85,7 @@ double getPowCpp(int ip, double d, double r)
         }
       }
     }
-    dname = "input/ions/solar-dep.inp";
+    dname = MYLIB_DATADIR "/input/ions/solar-dep.inp";
     std::ifstream ifs1(dname, std::ios::in);
     if (!ifs1) {
       ERROR_MESSAGE_NOEXIST(dname);
@@ -135,7 +137,7 @@ double CorrNeutCpp(double s, double r, double d, double e)
 
   if (ifirst == 0) {  // Initialization
     ifirst = 1;
-    dname = "input/neutro/correction-depth-rigid.inp";
+    dname = MYLIB_DATADIR "/input/neutro/correction-depth-rigid.inp";
     std::ifstream ifs(dname, std::ios::in);
     if (!ifs) {
       ERROR_MESSAGE_NOEXIST(dname);
@@ -200,7 +202,7 @@ void getGparaCpp(double g, double* geo)
   std::string chatmp;
 
   if (p[1] == 0) {  // Initialization
-    dname = "input/neutro/Geo-Dep.inp";
+    dname = MYLIB_DATADIR "/input/neutro/Geo-Dep.inp";
     std::ifstream ifs1(dname, std::ios::in);
     if (!ifs1) {
       ERROR_MESSAGE_NOEXIST(dname);
@@ -210,7 +212,7 @@ void getGparaCpp(double g, double* geo)
     std::getline(ifs1, str);  // Read p(1)-p(3)
     std::stringstream s1(str);
     s1 >> p[1] >> p[2] >> p[3];
-    dname = "input/neutro/Water-Dep.inp";
+    dname = MYLIB_DATADIR "/input/neutro/Water-Dep.inp";
     std::ifstream ifs2(dname, std::ios::in);
     if (!ifs2) {
       ERROR_MESSAGE_NOEXIST(dname);
@@ -226,7 +228,7 @@ void getGparaCpp(double g, double* geo)
     std::getline(ifs2, str);  // Read data
     std::stringstream s22(str);
     s22 >> chatmp >> p[10] >> p[11] >> p[12] >> p[13] >> p[14];
-    dname = "input/neutro/Aircraft-Dep.inp";
+    dname = MYLIB_DATADIR "/input/neutro/Aircraft-Dep.inp";
     std::ifstream ifs3(dname, std::ios::in);
     std::getline(ifs3, str);  // Kara-yomi
     std::getline(ifs3, str);  // Read data
@@ -279,7 +281,7 @@ double getA4Cpp(double r, double d)
   int ia;
 
   if (B[2] == 0.0) {  // first time
-    dname = "input/neutro/Depth-Dep-mid.out";
+    dname = MYLIB_DATADIR "/input/neutro/Depth-Dep-mid.out";
     std::ifstream ifs(dname, std::ios::in);
     if (!ifs) {
       ERROR_MESSAGE_NOEXIST(dname);
@@ -290,7 +292,7 @@ double getA4Cpp(double r, double d)
     std::getline(ifs, str);
     std::stringstream s(str);
     s >> tmp1 >> tmp2 >> B[2] >> B[3] >> B[4];
-    dname = "input/neutro/Rigid-Dep.inp";
+    dname = MYLIB_DATADIR "/input/neutro/Rigid-Dep.inp";
     std::ifstream ifs1(dname, std::ios::in);
     if (!ifs1) {
       ERROR_MESSAGE_NOEXIST(dname);
@@ -333,7 +335,7 @@ double getA12Cpp(double r, double d)
   int ia, ib;
 
   if (B[4] == 0.0) {  // first time
-    dname = "input/neutro/Depth-Dep-hig.out";
+    dname = MYLIB_DATADIR "/input/neutro/Depth-Dep-hig.out";
     std::ifstream ifs(dname, std::ios::in);
     if (!ifs) {
       ERROR_MESSAGE_NOEXIST(dname);
@@ -344,7 +346,7 @@ double getA12Cpp(double r, double d)
     std::getline(ifs, str);
     std::stringstream s(str);
     s >> tmp0 >> tmp1 >> tmp2 >> tmp3 >> B[4];
-    dname = "input/neutro/Rigid-Dep.inp";
+    dname = MYLIB_DATADIR "/input/neutro/Rigid-Dep.inp";
     std::ifstream ifs1(dname, std::ios::in);
     if (!ifs1) {
       ERROR_MESSAGE_NOEXIST(dname);
@@ -401,9 +403,9 @@ double getBestRCpp(int is, double r, double d, int ip)
     ifirst = 1;
     for (i = 0; i <= npart; i++) {
       if (i == 0) {
-        dname = "input/neutro/bestR.inp";
+        dname = MYLIB_DATADIR "/input/neutro/bestR.inp";
       } else {
-        dname = "input/elemag/bestR-" + pname[i] + ".inp";
+        dname = MYLIB_DATADIR "/input/elemag/bestR-" + pname[i] + ".inp";
       }
       std::ifstream ifs(dname, std::ios::in);
       if (!ifs) {
@@ -475,13 +477,13 @@ double getFlCpp(int ip, double s, double r, double d)
     ifirst = 1;
     for (i = 0; i <= 5; i++) {
       if (i <= 2) {
-        dname = "input/" + pname[i] + "/Rigid-Dep.inp";  // neutron, proton, alpha
+        dname = MYLIB_DATADIR "/input/" + pname[i] + "/Rigid-Dep.inp";  // neutron, proton, alpha
       } else if (i == 3) {
-        dname = "input/" + pname[i] + "/Rigid-Dep-EL.inp";  // electron
+        dname = MYLIB_DATADIR "/input/" + pname[i] + "/Rigid-Dep-EL.inp";  // electron
       } else if (i == 4) {
-        dname = "input/" + pname[i] + "/Rigid-Dep-PO.inp";  // positron
+        dname = MYLIB_DATADIR "/input/" + pname[i] + "/Rigid-Dep-PO.inp";  // positron
       } else if (i == 5) {
-        dname = "input/" + pname[i] + "/Rigid-Dep-PH.inp";  // photon
+        dname = MYLIB_DATADIR "/input/" + pname[i] + "/Rigid-Dep-PH.inp";  // photon
       }
       std::ifstream ifs(dname, std::ios::in);
       if (!ifs) {
@@ -498,7 +500,7 @@ double getFlCpp(int ip, double s, double r, double d)
         }  // A(4)&A(12) is s,r,d-dependence, so will be changed
       }
     }
-    dname = "input/ions/Rigid-Dep.inp";
+    dname = MYLIB_DATADIR "/input/ions/Rigid-Dep.inp";
     std::ifstream ifs1(dname, std::ios::in);
     if (!ifs1) {
       ERROR_MESSAGE_NOEXIST(dname);
@@ -579,7 +581,7 @@ double getNeutSpecCpp(double s, double r1, double d1, double g, double e)
 
   if (ifirst == 0) {  // first time, get universal parameter (i.e: independent of all parameters)
                       //      Read A parameter
-    dname = "input/neutro/fitting-lowspec.inp";
+    dname = MYLIB_DATADIR "/input/neutro/fitting-lowspec.inp";
     std::ifstream ifs(dname, std::ios::in);
     if (!ifs) {
       ERROR_MESSAGE_NOEXIST(dname);
@@ -706,7 +708,7 @@ double getPrimaryCpp(int iz, int ia, double s, double d, double e)  // get Prima
   if (down == 0.0) {  // Initialization
     down = 1.720313e0;
     for (ig = 1; ig <= ngroup; ig++) {
-      dname = "input/ions/primary-" + gname[ig] + ".inp";
+      dname = MYLIB_DATADIR "/input/ions/primary-" + gname[ig] + ".inp";
       std::ifstream ifs(dname, std::ios::in);
       if (!ifs) {
         ERROR_MESSAGE_NOEXIST(dname);
@@ -722,7 +724,7 @@ double getPrimaryCpp(int iz, int ia, double s, double d, double e)  // get Prima
         }
       }
     }
-    dname = "input/ions/dEdx-table.inp";
+    dname = MYLIB_DATADIR "/input/ions/dEdx-table.inp";
     std::ifstream ifs1(dname, std::ios::in);
     if (!ifs1) {
       ERROR_MESSAGE_NOEXIST(dname);
@@ -806,15 +808,15 @@ double getSecondaryCpp(int ip, double s, double r1, double d1, double e)
     ifirst = 1;
     for (i = 1; i <= 5; i++) {
       if (i == 1) {
-        dname = "input/proton/fitting-lowspec.inp";
+        dname = MYLIB_DATADIR "/input/proton/fitting-lowspec.inp";
       } else if (i == 2) {
-        dname = "input/alphaa/fitting-lowspec.inp";
+        dname = MYLIB_DATADIR "/input/alphaa/fitting-lowspec.inp";
       } else if (i == 3) {
-        dname = "input/elemag/fitting-lowspec-EL.inp";
+        dname = MYLIB_DATADIR "/input/elemag/fitting-lowspec-EL.inp";
       } else if (i == 4) {
-        dname = "input/elemag/fitting-lowspec-PO.inp";
+        dname = MYLIB_DATADIR "/input/elemag/fitting-lowspec-PO.inp";
       } else if (i == 5) {
-        dname = "input/elemag/fitting-lowspec-PH.inp";
+        dname = MYLIB_DATADIR "/input/elemag/fitting-lowspec-PH.inp";
       }
       std::ifstream ifs(dname, std::ios::in);
       if (!ifs) {
@@ -831,7 +833,7 @@ double getSecondaryCpp(int ip, double s, double r1, double d1, double e)
         }
       }
     }
-    dname = "input/ions/fitting-lowspec.inp";
+    dname = MYLIB_DATADIR "/input/ions/fitting-lowspec.inp";
     std::ifstream ifs1(dname, std::ios::in);
     if (!ifs1) {
       ERROR_MESSAGE_NOEXIST(dname);
@@ -923,7 +925,7 @@ double getIonSpecCpp(int iz, double s, double r, double d, double e)
 
   if (ifirst == 0) {  // Initialization
     ifirst = 1;
-    dname = "input/ions/Combine.inp";
+    dname = MYLIB_DATADIR "/input/ions/Combine.inp";
     std::ifstream ifs(dname, std::ios::in);
     if (!ifs) {
       ERROR_MESSAGE_NOEXIST(dname);
@@ -989,7 +991,7 @@ void getAmuon(int ip, int is, double d, double r, double* acurr)
   if (ifirst == 0) {  // Initialization
     ifirst = 1;
     for (ip2 = 1; ip2 <= npart; ip2++) {
-      dname = "input/muon--/final135." + charge[ip2];
+      dname = MYLIB_DATADIR "/input/muon--/final135." + charge[ip2];
       std::ifstream ifs1(dname, std::ios::in);
       if (!ifs1) {
         ERROR_MESSAGE_NOEXIST(dname);
@@ -1001,7 +1003,7 @@ void getAmuon(int ip, int is, double d, double r, double* acurr)
         std::stringstream s1(str);
         s1 >> dep[id2] >> Bdata[1][1][ip2][id2] >> Bdata[3][1][ip2][id2] >> Bdata[5][1][ip2][id2];
       }
-      dname = "input/muon--/final2467." + charge[ip2];
+      dname = MYLIB_DATADIR "/input/muon--/final2467." + charge[ip2];
       std::ifstream ifs2(dname, std::ios::in);
       if (!ifs2) {
         ERROR_MESSAGE_NOEXIST(dname);
@@ -1272,7 +1274,7 @@ double getGneutCpp(double emid, int id)
 
   if (ifirst == 0) {  // Initialization
     ifirst = 1;
-    dname = "input/angle/NeutronGround.out";
+    dname = MYLIB_DATADIR "/input/angle/NeutronGround.out";
     std::ifstream ifs(dname, std::ios::in);
     if (!ifs) {
       ERROR_MESSAGE_NOEXIST(dname);
@@ -1317,7 +1319,7 @@ double BHfactorCpp(int ip, double e, double ang)
   if (ifirst == 0) {  // Initialization
     ifirst = 1;
     for (ip2 = 1; ip2 <= npart; ip2++) {
-      dname = "input/angle/BkH-" + pname[ip2] + ".inp";
+      dname = MYLIB_DATADIR "/input/angle/BkH-" + pname[ip2] + ".inp";
       std::ifstream ifs(dname, std::ios::in);
       if (!ifs) {
         ERROR_MESSAGE_NOEXIST(dname);
@@ -1413,7 +1415,7 @@ double getSpecAngCpp(int ip, double s, double r, double d, double e, double g, d
   if (ifirst == 0) {  // Initialization
     ifirst = 1;
     for (ip1 = 1; ip1 <= npart; ip1++) {
-      dname = "input/angle/" + pname[ip1] + ".out";
+      dname = MYLIB_DATADIR "/input/angle/" + pname[ip1] + ".out";
       std::ifstream ifs1(dname, std::ios::in);
       if (!ifs1) {
         ERROR_MESSAGE_NOEXIST(dname);
@@ -1432,7 +1434,7 @@ double getSpecAngCpp(int ip, double s, double r, double d, double e, double g, d
           }
         }
       }
-      dname = "input/angle/" + pname[ip1] + "-Eint.out";
+      dname = MYLIB_DATADIR "/input/angle/" + pname[ip1] + "-Eint.out";
       std::ifstream ifs2(dname, std::ios::in);
       if (!ifs2) {
         ERROR_MESSAGE_NOEXIST(dname);
@@ -1617,7 +1619,7 @@ double getHPcpp(int iy0, int im0, int id0)
 
   if (ifirst == 0) {  // Initialization
     ifirst = 1;
-    dname = "input/FFPtable.day";  // Read daily force potential
+    dname = MYLIB_DATADIR "/input/FFPtable.day";  // Read daily force potential
     std::ifstream ifs(dname, std::ios::in);
     if (!ifs) {
       ERROR_MESSAGE_NOEXIST(dname);
@@ -1637,7 +1639,7 @@ double getHPcpp(int iy0, int im0, int id0)
         // for (int iy=iystart; iy <= iyend; iy++) {std::cout << FFP[iy][im][id] << " ";}
       }
     }
-    dname = "input/FFPtable.uso";  // Read annual force field potential
+    dname = MYLIB_DATADIR "/input/FFPtable.uso";  // Read annual force field potential
     std::ifstream ifs1(dname, std::ios::in);
     if (!ifs1) {
       ERROR_MESSAGE_NOEXIST(dname);
@@ -1717,7 +1719,7 @@ double getrcpp(double cido, double ckei)  // cido and ckei are center of ido&kei
 
   if (ifirst == 0) {  // Initialization
     ifirst = 1;
-    dname = "input/CORdata.inp";  // Read vertical cut-off rigidity database
+    dname = MYLIB_DATADIR "/input/CORdata.inp";  // Read vertical cut-off rigidity database
     std::ifstream ifs(dname, std::ios::in);
     if (!ifs) {
       ERROR_MESSAGE_NOEXIST(dname);
@@ -1776,7 +1778,7 @@ double getdcpp(double alti, double cido)  // getd in g/cm^2, alti in km
 
   if (ifirst == 0) {  // Initialization
     ifirst = 1;
-    dname = "input/AtomDepth.inp";  // Read vertical cut-off rigidity database
+    dname = MYLIB_DATADIR "/input/AtomDepth.inp";  // Read vertical cut-off rigidity database
     std::ifstream ifs(dname, std::ios::in);
     if (!ifs) {
       ERROR_MESSAGE_NOEXIST(dname);
@@ -1871,7 +1873,7 @@ double get511fluxCpp(double s, double r, double d)  // get 511 keV photon flux i
 
   if (ifirst == 0) {  // Initialization
     ifirst = 1;
-    dname = "input/elemag/flux511keV.inp";
+    dname = MYLIB_DATADIR "/input/elemag/flux511keV.inp";
     std::ifstream ifs(dname, std::ios::in);
     if (!ifs) {
       ERROR_MESSAGE_NOEXIST(dname);

@@ -1,0 +1,3 @@
+#pragma once
+
+#define MYLIB_DATADIR "@MYLIB_DATADIR@"

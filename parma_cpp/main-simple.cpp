@@ -1,4 +1,5 @@
 #include <iostream>
+#include <filesystem>
 using namespace std;
 
 double getHPcpp(int, int, int);
@@ -7,8 +8,11 @@ double getdcpp(double, double);
 double getSpecCpp(int, double, double, double, double, double);
 double getSpecAngFinalCpp(int, double, double, double, double, double, double);
 
+#include "config.h"
 int main()
 {
+  namespace fs = std::filesystem;
+
   const int npart = 33;
   int IangPart[npart + 1] = {1, 2, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 5, 5, 6};
 
