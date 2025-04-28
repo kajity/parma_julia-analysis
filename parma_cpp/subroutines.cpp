@@ -14,6 +14,9 @@
   fs::path cwd = fs::current_path();     \
   std::cout << "Error at " __FILE__ ":" << __LINE__ << ". File " << cwd / file_name << " does not exist." << std::endl
 
+// JuliaからCのコードとして呼べるように
+extern "C" {
+
 // **********************************************************
 double getRfromECpp(int iz, int ia, double Ek, double Em)  // get Rigidity in MV from Kinetic Energy (MeV/n)
 // **********************************************************
@@ -1910,3 +1913,4 @@ double get511fluxCpp(double s, double r, double d)  // get 511 keV photon flux i
 
   return get511flux;
 }
+} // extern "C"

@@ -13,6 +13,11 @@ end
 @time a = fibonacci(1000)
 @time println(a, "\n")
 
+libparma_main = "./build/libparma-main.so"
+libparma = "./build/libparma.so"
+
 println(pwd())
-parma = () -> @ccall "./build/libparma-main.so".main()::Cint
+parma = () -> @ccall libparma_main.main()::Cint
 println(parma())
+parma = (s::Cdouble) -> @ccall libparma.getFFPfromWCpp(s::Cdouble)::Cdouble
+println(parma(3.555))
