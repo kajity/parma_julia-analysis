@@ -1744,9 +1744,10 @@ double getrcpp(double cido, double ckei)  // cido and ckei are center of ido&kei
   }
 
   // **** Determine Cut-off Rigidity ***********
-  if ((ckei > 180) && (ckei < 360)) {
-    ckei = ckei - 360.0;
-  }  // should be given in western longitude
+  // if ((ckei > 180) && (ckei < 360)) {
+  //   ckei = ckei - 360.0;
+  // }  // should be given in western longitude
+  ckei = std::remainder(ckei, 360.0);  // should be given in western longitude
   int id = std::min(mido - 1, (int)((cido + 90.0) / sido) + 1);   // lower ido bin
   int ik = std::min(mkei - 1, (int)((ckei + 180.0) / skei) + 1);  // lower keido bin
   double cor1 = cordata[id][ik] * (dpido[id + 1] - cido) / (dpido[id + 1] - dpido[id]) + cordata[id + 1][ik] * (cido - dpido[id]) / (dpido[id + 1] - dpido[id]);
