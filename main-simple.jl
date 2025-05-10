@@ -1,6 +1,4 @@
-include("modules/parma_wrapper.jl")
-
-using .Parma
+include("ParmaAnalysis/src/parmawrapper.jl")
 
 npart = 33
 IangPart::Vector{Cint} = [1, 2, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 5, 5, 6]
@@ -32,13 +30,13 @@ if (IangPart[ip+1] > 0)
   println("Angular Differential Flux(/cm2/s/(MeV/n)/sr)= ", DifFlux)
 end
 
-using CairoMakie
-lat = range(-90, stop=90, length=300)
-lon = range(-180, stop=180, length=300)
-alti = 18.
-title=L"\mathrm{Angular\ integrated\ flux\ (/cm^2/s/(MeV/n))}"
-flux = @. getSpec(ip, s, getr(lat, lon'), getd(alti, lat), e, g)
-fig = Figure()
-ax = Axis(fig[1, 1], title=title)
-heatmap!(ax, lon, lat, flux, colormap=:plasma)
-fig
+# using CairoMakie
+# lat = range(-90, stop=90, length=300)
+# lon = range(-180, stop=180, length=300)
+# alti = 18.
+# title=L"\mathrm{Angular\ integrated\ flux\ (/cm^2/s/(MeV/n))}"
+# flux = @. getSpec(ip, s, getr(lat, lon'), getd(alti, lat), e, g)
+# fig = Figure()
+# ax = Axis(fig[1, 1], title=title)
+# heatmap!(ax, lon, lat, flux, colormap=:plasma)
+# fig

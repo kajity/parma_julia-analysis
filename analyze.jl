@@ -1,3 +1,4 @@
+using Revise
 import Pkg
 Pkg.develop(path="./ParmaAnalysis/")
 using ParmaAnalysis
@@ -12,6 +13,6 @@ alti = range(0, stop=81, length=9)
 
 title = L"\mathrm{Angular\ integrated\ flux\ (/cm^2/s/(MeV/n))}"
 
-ParmaAnalysis.e[] = 100
-plot_coordinate!(fig, lat, lon, alti, (3, 3), title=title)
+ParmaAnalysis.ip[] = 0
+plot_coordinate!(fig, lat, lon, (3, 3), altitude=3., energy=(10., 90.), title=title)
 # save("./figures/flux_coordinate.png", fig)
