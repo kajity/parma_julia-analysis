@@ -1,0 +1,3 @@
+*.png diff=exif
+test/* linguist-detectable=false
+parma_cpp/** linguist-vendored
