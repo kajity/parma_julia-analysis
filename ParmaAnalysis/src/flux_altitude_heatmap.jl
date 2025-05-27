@@ -21,7 +21,7 @@ function plot_longalti!(fig, longitude, altitude, num=(3, 3); latitude::FluxArg=
   for i in 1:numi, j in 1:numj
     e = isenergyvector ? energy[(i-1)*numj+j] : energy
     lat = isenergyvector ? latitude : latitude[(i-1)*numj+j]
-    axistitle = isenergyvector ? "energy = $(@sprintf("%.2f", e)) MeV" : "latitude = $(@sprintf("%.2f", lat)) km"
+    axistitle = isenergyvector ? "energy = $(@sprintf("%.2f", e)) MeV" : "latitude = $(@sprintf("%.2f", lat)) deg"
     println("Plotting ($i, $j) $axistitle")
     flux = @. getSpec(ip[], s, getr(lat, longitude), getd(altitude', lat), e, g[])
     push!(flux_extrema, extrema(flux)...)
@@ -71,7 +71,7 @@ function plot_latalti!(fig, latitude, altitude, num=(3, 3); longitude::FluxArg=0
   for i in 1:numi, j in 1:numj
     e = isenergyvector ? energy[(i-1)*numj+j] : energy
     lon = isenergyvector ? longitude : longitude[(i-1)*numj+j]
-    axistitle = isenergyvector ? "energy = $(@sprintf("%.2f", e)) MeV" : "longitude = $(@sprintf("%.2f", lon)) km"
+    axistitle = isenergyvector ? "energy = $(@sprintf("%.2f", e)) MeV" : "longitude = $(@sprintf("%.2f", lon)) deg"
     println("Plotting ($i, $j) $axistitle")
     flux = @. getSpec(ip[], s, getr(latitude, lon), getd(altitude', latitude), e, g[])
     push!(flux_extrema, extrema(flux)...)
