@@ -87,7 +87,7 @@ function plot_latalti!(fig, latitude, altitude, num=(3, 3); longitude::FluxArg=0
     )
     push!(hms, hm)
   end
-  println(flux_extrema)
+
   for i in LinearIndices(hms)
     flux_max = maximum(flux_extrema)
     flux_min = minimum(flux_extrema)

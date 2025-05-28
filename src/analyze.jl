@@ -26,7 +26,7 @@ ParmaAnalysis.ip[] = 1
 plot_latalti!(fig, lat, alti, (3, 3), longitude=(-180., 180.), energy=100., title=title, logscale=true)
 # save("./figures/flux_coordinate_n_e100.png", fig)
 # save("./figures/flux_coordinate_p_e100.png", fig)
-save("./figures/flux_latalti_p_e100.pdf", fig)
+save("./figures/flux_latalti_p_e100.png", fig)
 
 fig
 

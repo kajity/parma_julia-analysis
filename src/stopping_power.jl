@@ -26,7 +26,8 @@ dx = 0.0000005
 x_max = 15
 material = "silver"
 
-stopping_power = CSV.read("data/stopping-p_$material.csv", DataFrame)
+data_path = joinpath(@__DIR__, "..", "data", "stopping-p_$material.csv")
+stopping_power = CSV.read(data_path, DataFrame)
 
 
 path_length_values = path_length(stopping_power, energy, dx=dx, x_max=x_max)

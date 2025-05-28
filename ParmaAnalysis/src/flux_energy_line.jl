@@ -1,4 +1,4 @@
-include("parmawrapper.jl")
+include("parma_wrapper.jl")
 include("variables.jl")
 include("utils.jl")
 

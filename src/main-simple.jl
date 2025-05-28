@@ -1,4 +1,4 @@
-include("ParmaAnalysis/src/parmawrapper.jl")
+include(joinpath(@__DIR__, "../ParmaAnalysis/src/parmawrapper.jl"))
 
 npart = 33
 IangPart::Vector{Cint} = [1, 2, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 5, 5, 6]
