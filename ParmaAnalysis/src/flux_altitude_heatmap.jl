@@ -5,7 +5,7 @@ using LinearAlgebra
 using Printf
 
 
-function plot_longalti!(fig, longitude, altitude, num=(3, 3); latitude::FluxArg=0.0, energy::FluxArg=100.0, title="", colorrange=:auto, logscale=false,)
+function plot_longalti!(fig, longitude, altitude, num=(3, 3); latitude::FluxArg=0.0, energy::FluxArg=100.0, title="", colorrange=:auto, logscale=false, colormap=:inferno)
   println("Plotting flux (longitude, altitude)...")
 
   s = getHP(iyear[], imonth[], iday[]) # W-index (solar activity)
@@ -32,7 +32,7 @@ function plot_longalti!(fig, longitude, altitude, num=(3, 3); latitude::FluxArg=
       xticks=-180:60:180,
       yticks=0:20:80,
       axistitle=axistitle,
-      colorrange=(:inferno, 0.85),
+      colormap=(colormap, 0.85),
       colorscale=logscale ? log10 : identity,
     )
 
@@ -55,7 +55,7 @@ function plot_longalti!(fig, longitude, altitude, num=(3, 3); latitude::FluxArg=
 end
 
 
-function plot_latalti!(fig, latitude, altitude, num=(3, 3); longitude::FluxArg=0.0, energy::FluxArg=100.0, title="", colorrange=:auto, logscale=false,)
+function plot_latalti!(fig, latitude, altitude, num=(3, 3); longitude::FluxArg=0.0, energy::FluxArg=100.0, title="", colorrange=:auto, logscale=false, colormap=:inferno)
   println("Plotting flux (latitude, altitude)...")
 
   s = getHP(iyear[], imonth[], iday[]) # W-index (solar activity)
@@ -82,7 +82,7 @@ function plot_latalti!(fig, latitude, altitude, num=(3, 3); longitude::FluxArg=0
       xticks=-90:30:90,
       yticks=0:20:80,
       axistitle=axistitle,
-      colorrange=(:inferno, 0.85),
+      colormap=(colormap, 0.85),
       colorscale=logscale ? log10 : identity,
     )
     push!(hms, hm)

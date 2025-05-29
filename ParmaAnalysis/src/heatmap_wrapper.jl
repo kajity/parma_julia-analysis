@@ -2,7 +2,7 @@ using Makie
 
 function heatmapadd!(fig, (i, j, numi, numj), xaxis, yaxis, data;
   xticks=automatic, yticks=automatic,
-  axistitle="", colorrange=:auto, colorscale=log10, geo=false)
+  axistitle="", colormap=(:inferno, 0.85), colorscale=log10, geo=false)
 
   xdata = range(xaxis[1], stop=xaxis[end], length=xaxis.len + 1)
   ydata = range(yaxis[1], stop=yaxis[end], length=yaxis.len + 1)
@@ -14,7 +14,7 @@ function heatmapadd!(fig, (i, j, numi, numj), xaxis, yaxis, data;
     xticks=xticks,
     yticks=yticks,
   )
-  hm = heatmap!(ax, xdata, ydata, data; colormap=(:inferno, 0.85), colorscale=colorscale)
+  hm = heatmap!(ax, xdata, ydata, data; colormap=colormap, colorscale=colorscale)
   if geo
     lines!(ax, GeoMakie.coastlines(), color=(:black, 0.8), linewidth=0.8)
   end

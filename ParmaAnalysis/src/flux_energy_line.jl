@@ -3,7 +3,6 @@ include("variables.jl")
 include("utils.jl")
 
 using CairoMakie
-using GeoMakie
 using LaTeXStrings
 using LinearAlgebra
 using Statistics
@@ -83,5 +82,5 @@ Label(fig[:, 0], L"\mathrm{flux\ (/cm^2/s/(MeV/n))}", fontsize=14,
 # save("./figures/line_flux_energy_whole_globe.png", fig)
 # save("./figures/line_flux_energy_north.png", fig)
 
-save("./figures/line_flux_energy_$(situation).png", fig)
+# save("./figures/line_flux_energy_$(situation).png", fig)
 fig
