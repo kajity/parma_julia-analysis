@@ -2,7 +2,6 @@ using CSV
 using DataFrames
 using CairoMakie
 using LaTeXStrings
-using Interpolations
 using Printf
 
 struct StoppingPower

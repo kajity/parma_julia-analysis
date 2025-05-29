@@ -4,16 +4,22 @@ authors = ["Genki Kajitani <kajikajigenki.1515@gmail.com>"]
 version = "0.1.0"
 
 [deps]
+CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
 CairoMakie = "13f3f980-e62b-5c42-98c6-ff1f3baf88f0"
+DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
 GeoMakie = "db073c08-6b98-4ee5-b6a4-5efafb3259c6"
+Interpolations = "a98d9a8b-a2ab-59e6-89dd-64a1c18fca59"
 LaTeXStrings = "b964fa9f-0449-5b57-a5c2-d3ea65f4040f"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 Makie = "ee78f7c6-11fb-53f2-987a-cfe4a2b5a57a"
 Printf = "de0858da-6303-5e67-8744-51eddeeeb8d7"
 
 [compat]
+CSV = "0.10.15"
 CairoMakie = "0.13.4"
+DataFrames = "1.7.0"
 GeoMakie = "0.7.12"
+Interpolations = "0.15.1"
 LaTeXStrings = "1.4.0"
 LinearAlgebra = "1.11.0"
 Makie = "0.22.4"
