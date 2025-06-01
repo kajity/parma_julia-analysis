@@ -8,9 +8,7 @@ using Printf
 function plot_energyloss_p!(ax, material, energy; dx=0.000005, iteration=nothing, x_max=15.0, x_begin=0., color=:auto)
   energy_tmp = energy
 
-  data_path = joinpath(@__DIR__, "..", "data", "stopping-p_$material.csv")
-  stopping_power_raw = CSV.read(data_path, DataFrame)
-  stopping_power = StoppingPower(Float64.(stopping_power_raw.E), Float64.(stopping_power_raw.e))
+  stopping_power = get_stopping_power(material)
 
   # Interpolate the stopping power data to find the path length
   S = linear_interpolation(stopping_power.E, stopping_power.e)

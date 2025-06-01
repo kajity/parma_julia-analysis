@@ -10,13 +10,6 @@ using Statistics
 using Printf
 
 
-function get_fluxmean(lat, lon, alti, energy, s)
-  flux_mat = @. getSpec(ip[], s, getr(lat, lon'), getd(alti, lat), energy, g[]) # flux_mat[lat, lon]
-  parameter = @. cosd(lat)
-  flux_mat = flux_mat .* parameter
-  area = sum(parameter) * size(lon, 1)
-  sum(flux_mat) / area
-end
 
 function plot_energy!(ax, altitude, latitude, longitude; energy=10.0, label="", color=:auto,)
   s = getHP(iyear[], imonth[], iday[]) # W-index (solar activity)

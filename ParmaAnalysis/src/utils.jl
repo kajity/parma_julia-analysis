@@ -1,5 +1,3 @@
-using Interpolations
-
 const FluxArg = Union{Float64,NTuple{2,Float64},AbstractVector{Float64},}
 
 function get_fluxarg(flux::Float64, length::Int)
@@ -24,26 +22,11 @@ function check_fluxarg(length, args...)
   end
 end
 
-struct StoppingPower
-  E::Vector{Float64}  # Energy in MeV
-  e::Vector{Float64}  # Stopping power in MeV cm^2/g
-end
 
-function path_length(S, energy::Float64, e_min::Float64; dx=0.000005, iteration=nothing, x_max=15.0)
-  dx = iteration !== nothing ? x_max / iteration : dx
-  x = 0.0:dx:x_max
-  for i in 1:lastindex(x)-1
-    energy -= S(energy) * dx
-    if energy <= e_min
-      return (i + 1) * dx, 0., i + 1
-    end
-  end
-  energy -= S(energy) * dx
-  return x_max, energy, lastindex(x)
-end
-
-function path_length(stopping_power::StoppingPower, energy::Float64, e_min::Float64; dx=0.000005, iteration=nothing, x_max=15.0)
-  # Interpolate the stopping power data to find the path length
-  S = linear_interpolation(stopping_power.E, stopping_power.e)
-  path_length(S, energy, e_min; dx=dx, iteration=iteration, x_max=x_max)
+function get_fluxmean(lat, lon, alti, energy, s)
+  flux_mat = @. getSpec(ip[], s, getr(lat, lon'), getd(alti, lat), energy, g[]) # flux_mat[lat, lon]
+  parameter = @. cosd(lat)
+  flux_mat .= flux_mat .* parameter
+  area = sum(parameter) * size(lon, 1)
+  sum(flux_mat) / area
 end

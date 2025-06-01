@@ -1075,8 +1075,8 @@ uuid = "36c8627f-9965-5494-a995-c6b170f724f3"
 version = "1.56.1+0"
 
 [[deps.ParmaAnalysis]]
-deps = ["CSV", "CairoMakie", "DataFrames", "GeoMakie", "Interpolations", "LaTeXStrings", "LinearAlgebra", "Makie", "Printf"]
-path = "ParmaAnalysis"
+deps = ["CSV", "CairoMakie", "DataFrames", "GeoMakie", "Interpolations", "LaTeXStrings", "LinearAlgebra", "Makie", "Printf", "StructArrays"]
+path = "/home/kajit/lectures/4S-experiments/src/../ParmaAnalysis"
 uuid = "d03cd0bc-a753-4924-923b-0aac4c3d0df5"
 version = "0.1.0"
 
