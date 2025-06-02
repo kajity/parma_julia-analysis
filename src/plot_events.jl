@@ -11,7 +11,7 @@ longitude = range(-180, stop=180, length=30)
 title = "Detected events for $material (density is based on CdTe)"
 
 set_theme!(theme_latexfonts())
-fig = Figure(size=(1000, 500), fontsize=12)
+fig = Figure(size=(800, 500), fontsize=12)
 ax = Axis(
   fig[1, 1],
   # xscale=log10,

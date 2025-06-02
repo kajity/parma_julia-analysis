@@ -33,7 +33,7 @@ function plot_detected_flux!(ax, energy, latitude, longitude, material::String; 
         if isnothing(bin_index)
             error("Detected energy $e_detected MeV is out of bounds for the defined energy range.")
         end
-        energy_events.events[bin_index] += flux[i] * exposure_time * area * dE # 
+        energy_events.events[bin_index] += flux[i] * exposure_time * area * dE # エネルギーで積分
     end
 
     l = barplot!(ax, energy_events.energy, energy_events.events,

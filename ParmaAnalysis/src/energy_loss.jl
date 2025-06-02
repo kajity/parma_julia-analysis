@@ -48,8 +48,8 @@ function plot_energyloss_p!(ax, material, energy; dx=0.000005, iteration=nothing
 
   l = lines!(ax, x_data, y_data,
     linewidth=2, label="$(@sprintf("%.2f", energy)) MeV")
-  ax.xlabel = L"\mathrm{Path\ Length\ (cm\ g/cm^3)}"
-  ax.ylabel = L"\mathrm{Energy\ Loss\ (MeV\ cm^2/g)}"
+  ax.xlabel = L"\mathrm{Path\ length\ (cm)}"
+  ax.ylabel = L"\mathrm{Energy\ loss\ (MeV/cm)}"
   # ax.title = title
   ax.titlesize = 22
   ax.titlefont = :regular
