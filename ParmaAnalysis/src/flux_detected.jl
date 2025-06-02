@@ -29,10 +29,11 @@ function plot_detected_flux!(ax, energy, latitude, longitude, material::String; 
             error("Detected energy is non-positive for energy $e MeV")
         end
 
-        bin_index = findfirst(x -> x >= e_detected, energy_events.energy) - 1
+        bin_index = findfirst(x -> x >= e_detected, energy_events.energy)
         if isnothing(bin_index)
             error("Detected energy $e_detected MeV is out of bounds for the defined energy range.")
         end
+        bin_index -= 1  # minを超えた直後は1にしたいのでずらす
         energy_events.events[bin_index] += flux[i] * exposure_time * area * dE # エネルギーで積分
     end
 

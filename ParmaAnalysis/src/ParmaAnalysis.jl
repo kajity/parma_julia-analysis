@@ -15,6 +15,7 @@ export plot_coordinate!
 export plot_longalti!
 export plot_latalti!
 export plot_energyloss_p!
+export plot_detected_energy!
 export plot_detected_flux!
 
 end # module ParmaAnalysis
