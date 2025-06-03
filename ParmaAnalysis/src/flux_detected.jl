@@ -17,7 +17,7 @@ function plot_detected_events!(ax, energy, latitude, longitude, material::String
     S = interpolate((stopping_power.E,), stopping_power.e, Gridded(Linear()))
     e_min = minimum(stopping_power.E)
 
-    energy_events = StructArray{EnergyEvents}(energy=range(energy[1], stop=energy[end], length=n_bin), events=zeros(n_bin))
+    energy_events = StructArray{EnergyEvents}(energy=range(energy[1], stop=20., length=n_bin), events=zeros(n_bin))
 
     for i in 1:lastindex(energy)-1
         dE = energy[i+1] - energy[i]

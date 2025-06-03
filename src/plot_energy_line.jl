@@ -5,7 +5,7 @@ using ParmaAnalysis
 using CairoMakie
 using LaTeXStrings
 
-energy = exp10.(range(-1.0, stop=3.0, length=300))
+energy = exp10.(range(-1.0, stop=5.0, length=300))
 # energy = 500:0.05:520
 # longitude = range(-180, stop=180, length=30)
 # latitude = range(-90, stop=90, length=30)
@@ -20,7 +20,7 @@ ax = Axis(fig[1, 1], title="",
   titlesize=14,
   xscale=log10,
   yscale=log10,
-  limits=(energy[1], energy[end], 10^-7, 10^3),
+  limits=(energy[1], energy[end], 10^-9, 10^3),
 )
 
 ParmaAnalysis.ip[] = 0
