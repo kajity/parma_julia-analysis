@@ -2,7 +2,6 @@ using Revise
 import Pkg
 Pkg.develop(path="./ParmaAnalysis/")
 using ParmaAnalysis
-
 using CairoMakie
 
 set_theme!(theme_latexfonts())

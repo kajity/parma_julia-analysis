@@ -8,7 +8,7 @@ struct EnergyEvents
 end
 
 
-function plot_detected_flux!(ax, energy, latitude, longitude, material::String; altitude=20.0, n_bin=64, exposure_time = 1000., area = 100., label="", color=:auto, dx=0.000005, iteration=nothing, x_max=15.0)
+function plot_detected_events!(ax, energy, latitude, longitude, material::String; altitude=20.0, n_bin=64, exposure_time = 1000., area = 100., label="", color=:auto, dx=0.000005, iteration=nothing, x_max=15.0)
     s = getHP(iyear[], imonth[], iday[]) # W-index (solar activity)
 
     flux = get_fluxmean.(Ref(latitude), Ref(longitude), altitude, energy, s)
@@ -41,6 +41,5 @@ function plot_detected_flux!(ax, energy, latitude, longitude, material::String; 
         label=label)
     ax.xlabel = L"\mathrm{Energy\ (MeV)}"
     ax.ylabel = L"\mathrm{Detected\ events\ (counts)}"
-
-    l
+    l.color = color == :auto ? l.color : color
 end

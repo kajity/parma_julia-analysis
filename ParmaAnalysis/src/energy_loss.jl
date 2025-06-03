@@ -56,21 +56,24 @@ function plot_energyloss_p!(ax, material, energy; dx=0.000005, iteration=nothing
   l
 end
 
-function plot_detected_energy!(ax, energy, material;  label="proton", dx=0.005, x_max=0.1,)
+function plot_detected_energy!(ax, energy, material; label="proton", dx=0.005, x_max=0.1, color=:auto)
   stopping_power = get_stopping_power(material)
 
   e_min = minimum(stopping_power.E)
+
+  println("Plotting detected energy for $material with dx=$dx and x_max=$x_max")
 
   energy_end = getindex.(path_length.(Ref(stopping_power), energy, e_min; dx=dx, x_max=x_max), 2)
   energy_detected = energy .- energy_end
 
   # Plot the detected flux
   l = lines!(ax, energy, energy_detected,
-    linewidth=2, label="$label ($material)")
+    linewidth=1.5, label="$label ($material)")
   ax.xlabel = L"\mathrm{Energy\ (MeV)}"
-  ax.ylabel = L"\mathrm{Detected\ flux\ (cm^{-2}\ s^{-1})}"
+  ax.ylabel = L"\mathrm{Detected\ energy\ (MeV)}"
   ax.titlesize = 22
   ax.titlefont = :regular
+  l.color = color == :auto ? l.color : color
 
   l
 end
