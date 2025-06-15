@@ -8,16 +8,16 @@ struct EnergyEvents
 end
 
 
-function plot_detected_events!(ax, energy, latitude, longitude, material::String; altitude=20.0, n_bin=64, exposure_time = 1000., area = 100., label="", color=:auto, dx=0.000005, iteration=nothing, x_max=15.0)
+function plot_detected_events!(ax, energy, latitude, longitude, material::String, target::String; altitude=20.0, n_bin=64, exposure_time = 1000., area = 100., label="", color=:auto, dx=0.000005, iteration=nothing, x_max=15.0, bin_max=20.0)
     s = getHP(iyear[], imonth[], iday[]) # W-index (solar activity)
 
     flux = get_fluxmean.(Ref(latitude), Ref(longitude), altitude, energy, s)
 
-    stopping_power = get_stopping_power(material)
+    stopping_power = get_stopping_power(material, target)
     S = interpolate((stopping_power.E,), stopping_power.e, Gridded(Linear()))
     e_min = minimum(stopping_power.E)
 
-    energy_events = StructArray{EnergyEvents}(energy=range(energy[1], stop=20., length=n_bin), events=zeros(n_bin))
+    energy_events = StructArray{EnergyEvents}(energy=range(1e-2, stop=bin_max, length=n_bin), events=zeros(n_bin))
 
     for i in 1:lastindex(energy)-1
         dE = energy[i+1] - energy[i]
@@ -30,8 +30,10 @@ function plot_detected_events!(ax, energy, latitude, longitude, material::String
         end
 
         bin_index = findfirst(x -> x >= e_detected, energy_events.energy)
-        if isnothing(bin_index)
-            error("Detected energy $e_detected MeV is out of bounds for the defined energy range.")
+        if isnothing(bin_index) || bin_index == 1
+            # error("Detected energy $e_detected MeV is out of bounds for the defined energy range.")
+            print("Detected energy $e_detected MeV is out of bounds for the defined energy range. Skipping this event.\r")
+            continue
         end
         bin_index -= 1  # minを超えた直後は1にしたいのでずらす
         energy_events.events[bin_index] += flux[i] * exposure_time * area * dE # エネルギーで積分

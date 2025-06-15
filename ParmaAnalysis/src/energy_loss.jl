@@ -5,10 +5,10 @@ using LaTeXStrings
 using Interpolations
 using Printf
 
-function plot_energyloss_p!(ax, material, energy; dx=0.000005, iteration=nothing, x_max=15.0, x_begin=0., color=:auto)
+function plot_energyloss!(ax, energy, material::String, target::String; dx=0.000005, iteration=nothing, x_max=15.0, x_begin=0., color=:auto)
   energy_tmp = energy
 
-  stopping_power = get_stopping_power(material)
+  stopping_power = get_stopping_power(material, target)
 
   # Interpolate the stopping power data to find the path length
   S = linear_interpolation(stopping_power.E, stopping_power.e)
@@ -23,7 +23,7 @@ function plot_energyloss_p!(ax, material, energy; dx=0.000005, iteration=nothing
     println(@sprintf("Allocated %e bytes for this plot", n * sizeof(Float64)))
   end
 
-  println("Path length: ", path, " cm g/cm^3")
+  println("Path length: ", path, " cm")
   y = Vector{Float64}(undef, n)
 
   for i in eachindex(x)
@@ -56,8 +56,8 @@ function plot_energyloss_p!(ax, material, energy; dx=0.000005, iteration=nothing
   l
 end
 
-function plot_detected_energy!(ax, energy, material; label="proton", dx=0.005, x_max=0.1, color=:auto)
-  stopping_power = get_stopping_power(material)
+function plot_detected_energy!(ax, energy, material, target; label="proton", dx=0.005, x_max=0.1, color=:auto)
+  stopping_power = get_stopping_power(material, target)
 
   e_min = minimum(stopping_power.E)
 

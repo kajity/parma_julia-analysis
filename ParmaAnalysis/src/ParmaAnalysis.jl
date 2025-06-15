@@ -16,7 +16,7 @@ export plot_coordinate!
 export plot_longalti!
 export plot_latalti!
 export plot_energy_flux!
-export plot_energyloss_p!
+export plot_energyloss!
 export plot_detected_energy!
 export plot_detected_events!
 

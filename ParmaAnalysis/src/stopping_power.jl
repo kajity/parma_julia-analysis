@@ -9,12 +9,12 @@ struct StoppingPower
 end
 
 
-function get_stopping_power(material::String)
-  data_path = joinpath(@__DIR__, "..", "data", "stopping-p_$material.csv") # stopping power [MeV cm^2/g]
+function get_stopping_power(material::String, target::String)
+  data_path = joinpath(@__DIR__, "..", "data", "stopping-$(target)_$(material).csv") # stopping power [MeV cm^2/g]
     density = 5.85 # g/cm^3 for CdTe
   try
     stopping_power_raw = CSV.read(data_path, DataFrame)
-    return StoppingPower(Float64.(stopping_power_raw.E), Float64.(stopping_power_raw.e) .* density)
+    return StoppingPower(Float64.(stopping_power_raw.E), Float64.(stopping_power_raw.total) .* density)
   catch e
     error("Stopping power data for $material not found. Please check the file path: $data_path")
   end
@@ -38,7 +38,9 @@ end
 
 function path_length(stopping_power::StoppingPower, energy::Float64, e_min::Float64; dx=0.000005, iteration=nothing, x_max=15.0)
   # Interpolate the stopping power data to find the path length
-  S = linear_interpolation(stopping_power.E, stopping_power.e)
+  # S = linear_interpolation(stopping_power.E, stopping_power.e)
+  S_interp = interpolate((stopping_power.E,), stopping_power.e, Gridded(Linear()))
+  S = extrapolate(S_interp, Linear())
   path_length(S, energy, e_min; dx=dx, iteration=iteration, x_max=x_max)
 end
 
