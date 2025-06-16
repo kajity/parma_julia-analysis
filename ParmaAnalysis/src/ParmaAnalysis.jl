@@ -21,5 +21,6 @@ export plot_detected_energy!
 export search_extremum_detected_energy
 export plot_stopping_power!
 export plot_detected_events!
+export plot_detected_events_photon!
 
 end # module ParmaAnalysis
