@@ -78,16 +78,34 @@ function plot_detected_energy!(ax, energy, material, target; label="proton", dx=
   l
 end
 
+function search_extremum_detected_energy(energy::AbstractVector{Float64}, material, target; dx=0.005, x_max=0.1)
+  stopping_power = get_stopping_power(material, target)
 
-function plot_stopping_power_p!(ax, energy, material; label="proton", dx=0.005, x_max=0.1, color=:auto)
-  stopping_power = get_stopping_power(material)
+  e_min::Float64 = minimum(stopping_power.E)
 
-  e_min = minimum(stopping_power.E)
+  println("Searching for minimum detected energy for $material with dx=$dx and x_max=$x_max")
+
+  energy_end::Vector{Float64} = getindex.(path_length.(Ref(stopping_power), energy, e_min; dx=dx, x_max=x_max), 2)
+  energy_detected = energy .- energy_end
+
+  energy_diff = @view(energy_detected[2:end]) .- @view(energy_detected[1:end-1])
+  turning_point = findfirst(energy_diff .< 0)
+  if turning_point === nothing
+    println("No turning point found, returning minimum energy detected.")
+    return (minimum(energy_detected), maximum(energy_detected))
+  end
+  return (minimum(@view energy_detected[turning_point:end]), energy_detected[turning_point])
+end
+
+
+function plot_stopping_power!(ax, energy, material, target; label="proton", dx=0.005, x_max=0.1, color=:auto)
+  stopping_power = get_stopping_power(material, target)
 
   println("Plotting detected energy for $material with dx=$dx and x_max=$x_max")
 
     S_interp = interpolate((stopping_power.E,), stopping_power.e, Gridded(Linear()))
-  S = extrapolate(S_interp, Flat())
+  # S = extrapolate(S_interp, Flat())
+  S = extrapolate(S_interp, Linear())
 
   stopping_power = S.(energy)
 

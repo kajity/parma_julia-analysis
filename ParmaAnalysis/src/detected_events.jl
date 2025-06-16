@@ -8,7 +8,7 @@ struct EnergyEvents
 end
 
 
-function plot_detected_events!(ax, energy, latitude, longitude, material::String; x_end=20., altitude=20.0, n_bin=64, area=100., label="", color=:auto, dx=0.000005, iteration=nothing, thickness=15.0, bin_max=20.0)
+function plot_detected_events!(ax, energy, latitude, longitude, material::String, target::String; x_end=20., altitude=20.0, n_bin=64, area=100., label="", color=:auto, dx=0.000005, iteration=nothing, thickness=15.0, bin_max=20.0)
     s = getHP(iyear[], imonth[], iday[]) # W-index (solar activity)
 
     flux = get_fluxmean.(Ref(latitude), Ref(longitude), altitude, energy, s)
@@ -16,7 +16,8 @@ function plot_detected_events!(ax, energy, latitude, longitude, material::String
     stopping_power = get_stopping_power(material, target)
     energy_events = StructArray{EnergyEvents}(energy=range(1e-2, stop=bin_max, length=n_bin), events=zeros(n_bin))
     S_interp = interpolate((stopping_power.E,), stopping_power.e, Gridded(Linear()))
-    S = extrapolate(S_interp, Flat())
+    # S = extrapolate(S_interp, Flat())
+    S = extrapolate(S_interp, Linear())
     e_min = minimum(stopping_power.E)
 
     for i in 1:lastindex(energy)-1
@@ -36,13 +37,13 @@ function plot_detected_events!(ax, energy, latitude, longitude, material::String
             continue
         end
         bin_index -= 1  # minを超えた直後は1にしたいのでずらす
-        # energy_events.events[bin_index] += flux[i] * area * dE # エネルギーで積分
-        energy_events.events[bin_index] += 1
+        energy_events.events[bin_index] += flux[i] * area * dE # エネルギーで積分
+        # energy_events.events[bin_index] += 1
     end
 
     l = barplot!(ax, energy_events.energy, energy_events.events,
         label=label)
-    ax.xlabel = L"\mathrm{Energy\ (MeV)}"
+    ax.xlabel = L"\mathrm{Detected\ energy\ (MeV)}"
     ax.ylabel = L"\mathrm{Detected\ events\ (counts / s)}"
     l.color = color == :auto ? l.color : color
 end

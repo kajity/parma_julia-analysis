@@ -18,7 +18,8 @@ export plot_latalti!
 export plot_energy_flux!
 export plot_energyloss!
 export plot_detected_energy!
-export plot_stopping_power_p!
+export search_extremum_detected_energy
+export plot_stopping_power!
 export plot_detected_events!
 
 end # module ParmaAnalysis
