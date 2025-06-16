@@ -77,3 +77,28 @@ function plot_detected_energy!(ax, energy, material, target; label="proton", dx=
 
   l
 end
+
+
+function plot_stopping_power_p!(ax, energy, material; label="proton", dx=0.005, x_max=0.1, color=:auto)
+  stopping_power = get_stopping_power(material)
+
+  e_min = minimum(stopping_power.E)
+
+  println("Plotting detected energy for $material with dx=$dx and x_max=$x_max")
+
+    S_interp = interpolate((stopping_power.E,), stopping_power.e, Gridded(Linear()))
+  S = extrapolate(S_interp, Flat())
+
+  stopping_power = S.(energy)
+
+  # Plot the detected flux
+  l = lines!(ax, energy, stopping_power,
+    linewidth=1.5, label="$label ($material)")
+  ax.xlabel = L"\mathrm{Energy\ (MeV)}"
+  ax.ylabel = L"\mathrm{Stopping\ power\ (MeV cm^2 / g)}"
+  ax.titlesize = 22
+  ax.titlefont = :regular
+  l.color = color == :auto ? l.color : color
+
+  l
+end

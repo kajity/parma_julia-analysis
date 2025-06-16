@@ -4,8 +4,8 @@ npart = 33
 IangPart::Vector{Cint} = [1, 2, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 5, 5, 6]
 
 # Set condition
-ip = 1           # Particle ID (Particle ID, 0:neutron, 1-28:H-Ni, 29-30:muon+-, 31:e-, 32:e+, 33:photon)
-e = 100.0        # Energy (MeV/n)
+ip = 1            # Particle ID (Particle ID, 0:neutron, 1-28:H-Ni, 29-30:muon+-, 31:e-, 32:e+, 33:photon)
+e = 1e-2            # Energy (MeV/n)
 iyear = 2019      # Year
 imonth = 2        # Month
 iday = 1          # Day

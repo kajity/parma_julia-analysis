@@ -41,7 +41,7 @@ ax = Axis(
 
 
 plot_detected_events!(ax, energy, latitude, longitude, material, target,
-  altitude=20.0, label=target, n_bin=100, dx=0.000005, x_max=0.1, exposure_time=1000., area=100., bin_max=bin_max)
+  altitude=20.0, label=target, n_bin=100, dx=0.000005, thickness=0.1, exposure_time=1000., area=100., bin_max=bin_max)
 Label(fig[1, :, Top()], title, fontsize=22, padding=(0, 0, 10, 0))
 
 # save(joinpath(@__DIR__, "..", "figures", "detected_events_$material.png"), fig)

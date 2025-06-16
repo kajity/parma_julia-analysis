@@ -10,7 +10,7 @@ include("flux_coordinate_heatmap.jl")
 include("flux_altitude_heatmap.jl")
 include("flux_energy_line.jl")
 include("energy_loss.jl")
-include("flux_detected.jl")
+include("detected_events.jl")
 
 export plot_coordinate!
 export plot_longalti!
@@ -18,6 +18,7 @@ export plot_latalti!
 export plot_energy_flux!
 export plot_energyloss!
 export plot_detected_energy!
+export plot_stopping_power_p!
 export plot_detected_events!
 
 end # module ParmaAnalysis
