@@ -7,6 +7,7 @@ using CairoMakie
 target = "e"  # Electron
 # target = "p"  # Proton
 # target = "photon"  # Photon
+target = "Crab"  # Crab Nebula Photon Flux
 
 material = ""
 bin_max = 0.0
@@ -28,6 +29,10 @@ elseif (target == "photon")
   material = "cadmium"
   bin_max = 1.
   energy = range(1e-2, stop=1e1, length=20000)
+  elseif (target == "Crab")
+    material = "cadmium"
+    bin_max = 1000.
+    energy = range(1e-2, stop=1e3, length=20000)
 else
   error("Unsupported target: $target")
 end
@@ -49,8 +54,11 @@ ax = Axis(
 if target == "photon"
   plot_detected_events_photon!(ax, energy, latitude, longitude,
     altitude=altitude, label=target, n_bin=100, area=100., bin_max=bin_max)
+elseif target == "Crab"
+  plot_detected_events_crab!(ax, energy,
+    altitude=altitude, label=target, n_bin=100, area=100., bin_max=bin_max)
 else
-  @time plot_detected_events!(ax, energy, latitude, longitude, material, target,
+  plot_detected_events!(ax, energy, latitude, longitude, material, target,
     altitude=altitude, label=target, n_bin=100, dx=0.000005, thickness=0.1, area=100., bin_max=bin_max)
   local_minimum_detected_energy, local_maximum_detected_energy = search_extremum_detected_energy(energy, material, target; dx=0.00005, x_max=0.1)
   println("Local minimum detected energy for $material with target $target: $local_minimum_detected_energy MeV")

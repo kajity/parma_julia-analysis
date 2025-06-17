@@ -6,6 +6,7 @@ include("variables.jl")
 include("utils.jl")
 include("stopping_power.jl")
 include("heatmap_wrapper.jl")
+include("crab_flux.jl")
 include("flux_coordinate_heatmap.jl")
 include("flux_altitude_heatmap.jl")
 include("flux_energy_line.jl")
@@ -22,5 +23,6 @@ export search_extremum_detected_energy
 export plot_stopping_power!
 export plot_detected_events!
 export plot_detected_events_photon!
+export plot_detected_events_crab!
 
 end # module ParmaAnalysis

@@ -24,7 +24,7 @@ function Crab_photon_flux(energy::AbstractVector{Float64})
   return flux[2:end]  # Exclude the first element which is zero
 end
 
-function plot_Crab_photon_flux(ax, energy::AbstractVector{Float64}; label::String="")
+function plot_Crab_photon_flux!(ax, energy::AbstractVector{Float64}; label::String="")
   flux = Crab_photon_flux(energy)
 
   l = lines!(ax, energy, flux, label=label, linewidth=2)
@@ -33,20 +33,3 @@ function plot_Crab_photon_flux(ax, energy::AbstractVector{Float64}; label::Strin
   # ax.title = "Crab Nebula Photon Flux"
   return l
 end
-
-
-energy = range(1e-2, stop=1e1, length=20000)
-
-set_theme!(theme_latexfonts())
-fig = Figure(size=(800, 500), fontsize=12)
-ax = Axis(
-  fig[1, 1],
-  xscale=log10,
-  # yscale=log10,
-  limits=(1e-2, 1e1, nothing, nothing),
-)
-plot_Crab_photon_flux(ax, energy, label="Crab Nebula Photon Flux")
-Label(fig[1, :, Top()], "Crab Nebula Photon Flux", fontsize=22, padding=(0, 0, 10, 0))
-save(joinpath(@__DIR__, "..", "figures", "crab_photon_flux.png"), fig)
-
-fig
