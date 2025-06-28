@@ -1,9 +1,13 @@
 # メモ
-- photonの天頂角ごとのフラックス
-- アルベドの高度依存・空間依存
-- crabとbackgorundのphotonのイベント数比較
+
+## 6/17
+
+- photonの天頂角ごとのフラックス -> plot_flux_line
+- アルベドの高度依存・空間依存 -> 〃
+- crabとbackgorssundのphotonのイベント数比較 -> line 化もやってみる
 
 ## 06/10
+
 - parmaのエネルギーレンジは 10^-2 MeV から 10^5 MeV
 - stopping powerのエネルギーレンジは 10^-3 MeV から 10^4 MeV
 

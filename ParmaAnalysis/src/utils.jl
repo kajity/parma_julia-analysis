@@ -14,6 +14,16 @@ function ip_name(ip)
   "unknown"
 end
 
+function ip_angle(ip)
+  ip == 0 ? 1 :
+  ip == 1 ? 2 :
+  ip == 2 ? 3 :
+  ip == 29 || ip == 30 ? 4 :
+  ip == 31 || ip == 32 ? 5 :
+  ip == 33 ? 6 :
+  0
+end
+
 function ip_name()
   ip_name(ip[])
 end
@@ -41,10 +51,22 @@ function check_fluxarg(length, args...)
 end
 
 
-function get_fluxmean(lat, lon, alti, energy, s)
+function get_fluxmean(lat::AbstractVector{Float64}, lon::AbstractVector{Float64}, alti::Float64, energy::Float64, s::Float64)
   flux_mat = @. getSpec(ip[], s, getr(lat, lon'), getd(alti, lat), energy, g[]) # flux_mat[lat, lon]
-  parameter = @. cosd(lat)
-  flux_mat .= flux_mat .* parameter
-  area = sum(parameter) * size(lon, 1)
+  factor = @. cosd(lat)
+  flux_mat .= flux_mat .* factor
+  area = sum(factor) * size(lon, 1)
+  sum(flux_mat) / area
+end
+
+function get_fluxmean_ang(lat::AbstractVector{Float64}, lon::AbstractVector{Float64}, alti::Float64, energy::Float64, s::Float64, angle::Float64)
+  ipa = ip_angle(ip[])
+  if ipa == 0
+    error("Particle ID $(ip[]) does not support angular differential flux")
+  end
+  flux_mat = @. getSpecAngFinal(ipa, s, getr(lat, lon'), getd(alti, lat), energy, g[], angle)
+  factor = @. cosd(lat)
+  flux_mat .= flux_mat .* factor
+  area = sum(factor) * size(lon, 1)
   sum(flux_mat) / area
 end

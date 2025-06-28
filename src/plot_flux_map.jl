@@ -4,14 +4,18 @@ Pkg.develop(path="./ParmaAnalysis/")
 using ParmaAnalysis
 using CairoMakie
 
-set_theme!(theme_latexfonts())
+func = "coordinate"
+# func = "latalti"
+# func = "longalti"
 
-fig = Figure(size=(1500, 800), fontsize=12, fonts=(; regular="Dejavu", weird="Blackchancery"))
 lat = range(-90, stop=90, length=300)
 lon = range(-180, stop=180, length=300)
 # alti = range(0, stop=81, length=9)
 alti = range(0, stop=81, length=300)
 energy = exp10.(range(-1.0, stop=3.0, length=9))
+
+set_theme!(theme_latexfonts())
+fig = Figure(size=(1500, 800), fontsize=12, fonts=(; regular="Dejavu", weird="Blackchancery"))
 
 # title = L"\mathrm{angular\ integrated\ flux\ (neutron, 100 MeV)\ (/cm^2/s/(MeV/n))}"
 title = L"\mathrm{angular\ integrated\ flux\ (proton, 20 km)\ (/cm^2/s/(MeV/n))}"

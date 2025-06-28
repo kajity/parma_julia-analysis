@@ -34,7 +34,7 @@ longitude = range(-180, stop=180, length=30)
 # latitude = range(-90, stop=90, length=30)
 # latitude = range(80, stop=90, length=30)
 latitude = range(-90, stop=-80, length=30)
-# longitude = [-104.0]
+# longitude = [-104.2]
 # latitude = [30.0]
 
 set_theme!(theme_latexfonts())

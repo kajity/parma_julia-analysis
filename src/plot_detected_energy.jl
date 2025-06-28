@@ -23,8 +23,8 @@ end
 
 # energy = range(0.1, stop=1000., length=2000)
 energy = exp10.(range(-2, stop=5, length=2000)) # stopping power data is supported up to 10^4 MeV!!
-latitude = [34.5]
-longitude = [-104.0]
+latitude = [34.8]
+longitude = [-104.2]
 altitude = 20.0
 
 set_theme!(theme_latexfonts())
@@ -38,7 +38,7 @@ ax1 = Axis(
 )
 
 
-plot_detected_energy!(ax1, energy, material, target, label="Detected energy", dx=0.000005, x_max=0.1)
+plot_detected_energy!(ax1, energy, material, target, label="Energy", dx=0.000005, x_max=0.1)
 
 local_minimum_detected_energy, local_maximum_detected_energy = search_extremum_detected_energy(energy, material, target; dx=0.000005, x_max=0.1)
 println("Local minimum detected energy for $material with target $target: $local_minimum_detected_energy MeV")
@@ -63,6 +63,8 @@ else
 
   title = "Detected energy and flux of $target for $material (density is based on CdTe)"
   Label(fig[1, :, Top()], title, fontsize=22, padding=(0, 0, 10, 0))
+  # Legend(fig[:, 2], ax1)
+  # Legend(fig[:, 2], ax2)
   save(joinpath(@__DIR__, "..", "figures", "detected_energy_flux_$(material)_$(target).png"), fig)
 end
 

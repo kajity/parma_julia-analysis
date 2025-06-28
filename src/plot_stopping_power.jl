@@ -20,8 +20,8 @@ else
 end
 
 energy = exp10.(range(-3, stop=5, length=2000))
-latitude = [34.5]
-longitude = [-104.0]
+latitude = [34.8]
+longitude = [-104.2]
 title = "Stopping power of $material for $target"
 
 set_theme!(theme_latexfonts())

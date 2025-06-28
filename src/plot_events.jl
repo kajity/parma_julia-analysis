@@ -4,7 +4,7 @@ Pkg.develop(path=joinpath(@__DIR__, "..", "ParmaAnalysis"))
 using ParmaAnalysis
 using CairoMakie
 
-target = "e"  # Electron
+# target = "e"  # Electron
 # target = "p"  # Proton
 # target = "photon"  # Photon
 target = "Crab"  # Crab Nebula Photon Flux
@@ -27,17 +27,18 @@ elseif (target == "p")
 elseif (target == "photon")
   ParmaAnalysis.ip[] = 33
   material = "cadmium"
-  bin_max = 1.
-  energy = range(1e-2, stop=1e1, length=20000)
-  elseif (target == "Crab")
-    material = "cadmium"
-    bin_max = 1000.
-    energy = range(1e-2, stop=1e3, length=20000)
+  # bin_max = 1.
+  bin_max = 0.05
+  energy = range(1e-2, stop=0.05, length=20000)
+elseif (target == "Crab")
+  material = "cadmium"
+  bin_max = 50.
+  energy = range(1e-2, stop=50, length=20000)
 else
   error("Unsupported target: $target")
 end
 
-latitude = [34.5]
+latitude = [34.8]
 longitude = [-104.0]
 altitude = 20.0
 title = "Detected events of $target for $material (density is based on CdTe)"
