@@ -17,8 +17,8 @@ function plot_energy_flux!(ax, energy, latitude, longitude; altitude=20.0, label
 
   l = lines!(ax, energy, flux, linewidth=1.5, label=label)
   ax.xlabel = L"\mathrm{Energy\ (MeV)}"
-  ax.ylabel = L"\mathrm{Detected\ flux\ (cm^{-2}\ s^{-1})}"
-  l.color = color == :auto ? l.color : color
+  ax.ylabel = L"\mathrm{Flux\ (cm^{-2}\ s^{-1}\ (MeV/n)^{-1})}"
+  color !== :auto && (l.color = color)
 
   l
 end

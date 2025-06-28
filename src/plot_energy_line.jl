@@ -5,14 +5,37 @@ using ParmaAnalysis
 using CairoMakie
 using LaTeXStrings
 
-energy = exp10.(range(-1.0, stop=5.0, length=300))
-# energy = 500:0.05:520
-# longitude = range(-180, stop=180, length=30)
-# latitude = range(-90, stop=90, length=30)
-# latitude = range(-90, stop=-80, length=30)
-# latitude = range(-80, stop=90, length=30)
-longitude = [-100.0]
-latitude = [30.0]
+# Choose the situation for plotting.
+# situation = "whole_globe"
+# situation = "511"
+# situation = "south"
+# situation = "north"
+situation = "Fort_Sumner"
+
+particles = [(0, :blue), (1, :red), (31, :green), (33, :orange), (29, :purple),]  # Particle IDs for different particles
+energy = exp10.(range(-2.0, stop=5.0, length=300))
+altitude = 20.0  # Altitude in km
+
+if (situation == "whole_globe")
+  latitude = range(-90, stop=90, length=30)
+  longitude = range(-180, stop=180, length=30) 
+elseif (situation == "511")
+  # energy = 511.0
+  latitude = range(-90, stop=90, length=30)
+  longitude = range(-180, stop=180, length=30)
+  energy = 500:0.05:520
+elseif (situation == "south")
+  latitude = range(-90, stop=-80, length=30)
+  longitude = range(-180, stop=180, length=30)
+elseif (situation == "north")
+  latitude = range(80, stop=90, length=30)
+  longitude = range(-180, stop=180, length=30)
+elseif (situation == "Fort_Sumner")
+  latitude = [34.8]
+  longitude = [-104.2]
+else
+  error("Unsupported situation: $situation")
+end
 
 set_theme!(theme_latexfonts())
 fig = Figure(size=(1000, 500), fontsize=12)
@@ -23,34 +46,17 @@ ax = Axis(fig[1, 1], title="",
   limits=(energy[1], energy[end], 10^-9, 10^3),
 )
 
-ParmaAnalysis.ip[] = 0
-plot_energy_flux!(ax, energy, latitude, longitude; altitude=20.0, label="neutron", color=:blue)
-ParmaAnalysis.ip[] = 1
-plot_energy_flux!(ax, energy, latitude, longitude; altitude=20.0, label="proton", color=:red)
-ParmaAnalysis.ip[] = 31
-plot_energy_flux!(ax, energy, latitude, longitude; altitude=20.0, label="electron", color=:green)
-ParmaAnalysis.ip[] = 33
-plot_energy_flux!(ax, energy, latitude, longitude; altitude=20.0, label="photon", color=:orange)
-ParmaAnalysis.ip[] = 29
-plot_energy_flux!(ax, energy, latitude, longitude; altitude=20.0, label="muon+", color=:purple)
+for ip in particles
+  ParmaAnalysis.ip[] = ip[1]
+  color = length(ip) > 1 ? ip[2] : :auto
+  label = ParmaAnalysis.ip_name()
+  plot_energy_flux!(ax, energy, latitude, longitude; altitude=altitude, label=label, color=color)
+end
 
-# situation = "whole_globe"
-# situation = "511"
-# situation = "south"
-# situation = "north"
-situation = "-100_30"
 
 Legend(fig[:, 2], ax)
-title = "Angular integrated flux $(situation) (energy vs flux)"
+title = "Angular integrated flux for $(situation) (energy vs flux)"
 Label(fig[0, :], title, fontsize=18)
-Label(fig[end+1, :], L"\mathrm{energy\ (MeV/n)}", fontsize=14)
-Label(fig[:, 0], L"\mathrm{flux\ (/cm^2/s/(MeV/n))}", fontsize=14,
-  rotation=π / 2)
 
-# save("./figures/line_flux_energy.png", fig)
-# save("./figures/line_flux_energy_511.png", fig)
-# save("./figures/line_flux_energy_whole_globe.png", fig)
-# save("./figures/line_flux_energy_north.png", fig)
-
-# save("./figures/line_flux_energy_$(situation).png", fig)
+save("./figures/line_flux_energy_$(situation).pdf", fig)
 fig

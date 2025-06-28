@@ -1,5 +1,23 @@
 const FluxArg = Union{Float64,NTuple{2,Float64},AbstractVector{Float64},}
 
+function ip_name(ip)
+  # Particle ID (Particle ID, 0:neutron, 1-28:H-Ni, 29-30:muon+-, 31:e-, 32:e+, 33:photon)
+  ip == 0 ? "neutron" :
+  ip == 1 ? "proton" :
+  ip == 2 ? "deuteron" :
+  ip == 3 ? "triton" :
+  ip == 29 ? "muon+" :
+  ip == 30 ? "muon-" :
+  ip == 31 ? "electron" :
+  ip == 32 ? "positron" :
+  ip == 33 ? "photon" :
+  "unknown"
+end
+
+function ip_name()
+  ip_name(ip[])
+end
+
 function get_fluxarg(flux::Float64, length::Int)
   return flux
 end
