@@ -43,11 +43,26 @@ function plot_angle_flux!(ax, angle, latitude, longitude; altitude=20.0, energy=
 
   println("Plotting flux")
 
-  flux = get_fluxmean_ang.(Ref(latitude), Ref(longitude), altitude, energy, s, cos.(angle))
+  flux = get_fluxmean_angdiff.(Ref(latitude), Ref(longitude), altitude, energy, s, angle)
 
   l = lines!(ax, angle, flux; linewidth=1.2, label=label)
-  ax.xlabel = "Angle (rad)"
-  ax.ylabel = L"\mathrm{Flux\ (cm^{-2}\ s^{-1}\ (MeV/n)^{-1})}"
+  ax.xlabel = "Zenith angle (rad)"
+  ax.ylabel = L"\mathrm{Flux\ (cm^{-2}\ s^{-1}\ str^{-1}\ (MeV/n)^{-1})}"
+  color !== :auto && (l.color = color)
+
+  l
+end
+
+function plot_angle_factor_flux!(ax, angle, latitude, longitude; altitude=20.0, energy=10.0, label="", color=:auto,)
+  s = getHP(iyear[], imonth[], iday[]) # W-index (solar activity)
+
+  println("Plotting flux")
+
+  flux = get_fluxmean_angdiff_factor.(Ref(latitude), Ref(longitude), altitude, energy, s, angle)
+
+  l = lines!(ax, angle, flux; linewidth=1.2, label=label)
+  ax.xlabel = "Zenith angle (rad)"
+  ax.ylabel = L"\mathrm{factor\ (str^{-1})}"
   color !== :auto && (l.color = color)
 
   l

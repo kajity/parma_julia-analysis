@@ -59,14 +59,34 @@ function get_fluxmean(lat::AbstractVector{Float64}, lon::AbstractVector{Float64}
   sum(flux_mat) / area
 end
 
-function get_fluxmean_ang(lat::AbstractVector{Float64}, lon::AbstractVector{Float64}, alti::Float64, energy::Float64, s::Float64, angle::Float64)
+function get_fluxmean_angdiff_factor(lat::AbstractVector{Float64}, lon::AbstractVector{Float64}, alti::Float64, energy::Float64, s::Float64, angle::Float64)
   ipa = ip_angle(ip[])
   if ipa == 0
     error("Particle ID $(ip[]) does not support angular differential flux")
   end
-  flux_mat = @. getSpecAngFinal(ipa, s, getr(lat, lon'), getd(alti, lat), energy, g[], angle)
+  flux_mat = @. getSpecAngFinal(ipa, s, getr(lat, lon'), getd(alti, lat), energy, g[], cos(angle))
   factor = @. cosd(lat)
   flux_mat .= flux_mat .* factor
   area = sum(factor) * size(lon, 1)
   sum(flux_mat) / area
+end
+
+function get_fluxmean_angdiff(lat::AbstractVector{Float64}, lon::AbstractVector{Float64}, alti::Float64, energy::Float64, s::Float64, angle::Float64)
+  ipa = ip_angle(ip[])
+  if ipa == 0
+    error("Particle ID $(ip[]) does not support angular differential flux")
+  end
+  flux_mat = @. getSpecAngFinal(ipa, s, getr(lat, lon'), getd(alti, lat), energy, g[], cos(angle)) * getSpec(ip[], s, getr(lat, lon'), getd(alti, lat), energy, g[])
+  factor = @. cosd(lat)
+  flux_mat .= flux_mat .* factor
+  area = sum(factor) * size(lon, 1)
+  sum(flux_mat) / area
+end
+
+function get_fluxmean_angle(lat::AbstractVector{Float64}, lon::AbstractVector{Float64}, alti::Float64, energy::Float64, s::Float64, angle::AbstractVector{Float64})
+  flux_angdiff = @. get_fluxmean_angdiff(Ref(lat), Ref(lon), alti, energy, s, angle)
+  factor = @. 2π(1 - cos(angle))  # Solid angle factor
+  ang_step = angle[2] - angle[1]  # Angular step size
+  flux_angdiff .= flux_angdiff .* factor * ang_step
+  sum(flux_angdiff)
 end

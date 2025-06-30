@@ -30,6 +30,18 @@ if (IangPart[ip+1] > 0)
   println("Angular Differential Flux(/cm2/s/(MeV/n)/sr)= ", DifFlux)
 end
 
+angle = range(0, stop=π, length=1000)  # Angle in radians
+if (IangPart[ip+1] > 0)
+  ipa = IangPart[ip+1]
+  DifFlux =@. getSpecAngFinal(ipa, s, r, d, e, g, cos(angle))
+  factor = @. 2π * sin(angle)  # Solid angle factor
+  dang = angle[2] - angle[1]  # Angular step size
+  DifFlux .= DifFlux .* factor * dang
+  Flux = sum(DifFlux) * Flux
+  println("Angular Integrated Flux for angle $(angle[end]) (/cm2/s/(MeV/n))= ", Flux)
+  println(sum(factor))
+end
+
 # using CairoMakie
 # lat = range(-90, stop=90, length=300)
 # lon = range(-180, stop=180, length=300)

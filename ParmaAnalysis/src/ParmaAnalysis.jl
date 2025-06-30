@@ -18,6 +18,7 @@ export plot_longalti!
 export plot_latalti!
 export plot_energy_flux!
 export plot_height_flux!
+export plot_angle_factor_flux!
 export plot_angle_flux!
 export plot_energyloss!
 export plot_detected_energy!
@@ -27,5 +28,6 @@ export plot_detected_events!
 export plot_detected_events_photon!
 export plot_detected_events_crab!
 export plot_Crab_photon_flux!
+export plot_detected_events_photon_angle!
 
 end # module ParmaAnalysis
