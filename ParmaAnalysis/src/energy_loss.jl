@@ -5,7 +5,7 @@ using LaTeXStrings
 using Interpolations
 using Printf
 
-function plot_energyloss!(ax, energy, material::String, target::String; dx=0.000005, iteration=nothing, x_max=15.0, x_begin=0., color=:auto)
+function plot_energyloss!(ax, energy, material::Symbol, target::Symbol; dx=0.000005, iteration=nothing, x_max=15.0, x_begin=0., color=:auto)
   energy_tmp = energy
 
   stopping_power = get_stopping_power(material, target)

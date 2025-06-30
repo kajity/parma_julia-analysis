@@ -4,19 +4,19 @@ Pkg.develop(path=joinpath(@__DIR__, "..", "ParmaAnalysis"))
 using ParmaAnalysis
 using CairoMakie
 
-# target = "e"
-target = "p"  # Proton
+target = :e
+# target = :p  # Proton
 twin_plot = true  # Set to true to plot detected energy and flux together
 # twin_plot = false  # Set to false to plot detected energy only
 
-material = ""
+material = :none
 
-if (target == "e")
+if (target == :e)
   ParmaAnalysis.ip[] = 31
-  material = "cadmium"
-elseif (target == "p")
+  material = :cadmium
+elseif (target == :p)
   ParmaAnalysis.ip[] = 1
-  material = "silver"
+  material = :silver
 else
   error("Unsupported target: $target")
 end

@@ -1,6 +1,7 @@
 using DataFrames
 using Interpolations
 using StructArrays
+using Base.Threads
 
 struct EnergyEvents
     energy::Float64
@@ -8,7 +9,7 @@ struct EnergyEvents
 end
 
 
-function plot_detected_events!(ax, energy, latitude, longitude, material::String, target::String; x_end=20., altitude=20.0, n_bin=64, area=100., label="", color=:auto, dx=0.000005, iteration=nothing, thickness=15.0, bin_max=20.0, type=:histogram)
+function plot_detected_events!(ax, energy, latitude, longitude, material::Symbol, target::Symbol; x_end=20., altitude=20.0, n_bin=64, area=100., label="", color=:auto, dx=0.000005, iteration=nothing, thickness=15.0, bin_max=20.0, type=:histogram)
     s = getHP(iyear[], imonth[], iday[]) # W-index (solar activity)
 
     flux = get_fluxmean.(Ref(latitude), Ref(longitude), altitude, energy, s)
@@ -21,7 +22,7 @@ function plot_detected_events!(ax, energy, latitude, longitude, material::String
     e_min = minimum(stopping_power.E)
 
     println("Calculating detected events for $target with material $material...")
-    for i in 1:lastindex(energy)-1
+    @threads for i in 1:lastindex(energy)-1
         dE = energy[i+1] - energy[i]
         e = energy[i] + dE * 0.5  # Use the midpoint for the energy
         (_, e_end, _) = path_length(S, e, e_min; dx=dx, iteration=iteration, x_max=thickness)
@@ -42,7 +43,7 @@ function plot_detected_events!(ax, energy, latitude, longitude, material::String
         # energy_events.events[bin_index] += 1
     end
     println("")
-    
+
     energy_keV = (energy_events.energy[1:end-1] + energy_events.energy[2:end]) / 2 * 1e3  # Convert energy to keV
     events = energy_events.events[1:end-1]
 
@@ -91,7 +92,7 @@ function plot_detected_events_photon!(ax, energy, latitude, longitude; altitude=
         # energy_events.events[bin_index] += 1
     end
 
-    energy_keV = (energy_events.energy[1:end-1] + energy_events.energy[2:end]) / 2 * 1e3  # Convert energy to keV
+    energy_keV = (energy_events.energy[1:end-1] + energy_events.energy[2:end]) * 0.5 * 1e3  # Convert energy to keV
     events = energy_events.events[1:end-1]
 
     if type == :histogram
@@ -100,7 +101,8 @@ function plot_detected_events_photon!(ax, energy, latitude, longitude; altitude=
         ax.ylabel = L"\mathrm{Detected\ events\ (counts s^{-1})}"
     elseif type == :line
         bar_width_keV = (bin_max - 1e-2) / n_bin * 1e3
-        energy_events.events ./= bar_width_keV
+        println(bar_width_keV)
+        events ./= bar_width_keV
         l = lines!(ax, energy_keV, events,
             label=label, linewidth=1.5)
         ax.ylabel = L"\mathrm{Detected\ events\ (counts\ s^{-1}\ keV^{-1})}"
@@ -116,7 +118,10 @@ end
 function plot_detected_events_crab!(ax, energy; altitude=20.0, n_bin=64, area=100., label="", color=:auto, bin_max=20.0, type=:histogram)
     s = getHP(iyear[], imonth[], iday[]) # W-index (solar activity)
 
+    energy *= 1e3
+    bin_max *= 1e3
     flux = Crab_photon_flux(energy)
+    # energy [keV], bin_max [keV]
     energy_events = StructArray{EnergyEvents}(energy=range(1e-2, stop=bin_max, length=n_bin), events=zeros(n_bin))
 
     for i in 1:lastindex(energy)-1
@@ -139,16 +144,16 @@ function plot_detected_events_crab!(ax, energy; altitude=20.0, n_bin=64, area=10
         # energy_events.events[bin_index] += 1
     end
 
-    energy_keV = (energy_events.energy[1:end-1] + energy_events.energy[2:end]) / 2
+    energy_keV = (energy_events.energy[1:end-1] + energy_events.energy[2:end]) * 0.5
     events = energy_events.events[1:end-1]
 
     if type == :histogram
         l = barplot!(ax, energy_keV, events,
             label=label)
-        ax.ylabel = L"\mathrm{Detected\ events\ (counts s^{-1})}"
+        ax.ylabel = L"\mathrm{Detected\ events\ (counts\ s^{-1})}"
     elseif type == :line
-        bar_width_keV = (bin_max - 1e-2) / n_bin * 1e3
-        energy_events.events ./= bar_width_keV
+        bar_width_keV = (bin_max - 1e-2) / n_bin
+        events ./= bar_width_keV
         l = lines!(ax, energy_keV, events,
             label=label, linewidth=1.5)
         ax.ylabel = L"\mathrm{Detected\ events\ (counts\ s^{-1}\ keV^{-1})}"

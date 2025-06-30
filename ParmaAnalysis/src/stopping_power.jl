@@ -9,7 +9,7 @@ struct StoppingPower
 end
 
 
-function get_stopping_power(material::String, target::String)
+function get_stopping_power(material::Symbol, target::Symbol)
   data_path = joinpath(@__DIR__, "..", "data", "stopping-$(target)_$(material).csv") # stopping power [MeV cm^2/g]
     density = 5.85 # g/cm^3 for CdTe
   try

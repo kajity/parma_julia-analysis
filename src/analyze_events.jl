@@ -31,7 +31,7 @@ end
 energy = 10.
 dx = 0.0000000005
 x_max = 0.1
-material = "silver"
+material = :silver
 
 data_path = joinpath(@__DIR__, "..", "data", "stopping-p_$material.csv")
 stopping_power = CSV.read(data_path, DataFrame)

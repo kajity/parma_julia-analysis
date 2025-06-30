@@ -7,19 +7,19 @@ using CairoMakie
 using LaTeXStrings
 using Printf
 
-target = "e"  # Electron
-# target = "p"  # Proton
+target = :e  # Electron
+# target = :p  # Proton
 
-material = ""
+material = :none
 x_maxs = []
 energy = 10.:10.:90.
-if (target == "e")
+if (target == :e)
   ParmaAnalysis.ip[] = 31
-  material = "cadmium"
+  material = :cadmium
   x_maxs = [2., 3., 3., 3., 3.3, 5., 5., 5., 5.]
-elseif (target == "p")
+elseif (target == :p)
   ParmaAnalysis.ip[] = 1
-  material = "silver"
+  material = :silver
   x_maxs = [0.05, 0.2, 0.3, 1., 1., 1.5, 2., 2., 2.]
 else
   error("Unsupported target: $target")
