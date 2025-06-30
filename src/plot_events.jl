@@ -9,6 +9,9 @@ using CairoMakie
 # target = "photon"  # Photon
 target = "Crab"  # Crab Nebula Photon Flux
 
+plot_type = :line
+# plot_type = :histogram
+
 material = ""
 bin_max = 0.0
 energy = []
@@ -49,19 +52,21 @@ ax = Axis(
   fig[1, 1],
   # xscale=log10,
   yscale=log10,
-  limits=(0., bin_max, nothing, nothing),
+  # limits=(0., bin_max * 1e3, 0, 0.5),
 )
 
 if target == "photon"
   plot_detected_events_photon!(ax, energy, latitude, longitude,
-    altitude=altitude, label=target, n_bin=100, area=100., bin_max=bin_max)
+    altitude=altitude, label=target, n_bin=100, area=100., bin_max=bin_max, type=plot_type)
 elseif target == "Crab"
   plot_detected_events_crab!(ax, energy,
-    altitude=altitude, label=target, n_bin=100, area=100., bin_max=bin_max)
+    altitude=altitude, label=target, n_bin=100, area=100., bin_max=bin_max, type=plot_type)
 else
   plot_detected_events!(ax, energy, latitude, longitude, material, target,
-    altitude=altitude, label=target, n_bin=100, dx=0.000005, thickness=0.1, area=100., bin_max=bin_max)
+    altitude=altitude, label=target, n_bin=100, dx=0.000005, thickness=0.1, area=100., bin_max=bin_max, type=plot_type)
   local_minimum_detected_energy, local_maximum_detected_energy = search_extremum_detected_energy(energy, material, target; dx=0.00005, x_max=0.1)
+  local_minimum_detected_energy *= 1e3  # Convert to keV
+  local_maximum_detected_energy *= 1e3  # Convert to keV
   println("Local minimum detected energy for $material with target $target: $local_minimum_detected_energy MeV")
   println("Local maximum detected energy for $material with target $target: $local_maximum_detected_energy MeV")
   vlines!(ax, [local_minimum_detected_energy, local_maximum_detected_energy], color=:red)

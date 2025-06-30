@@ -12,7 +12,6 @@ include("flux_altitude_heatmap.jl")
 include("flux_line.jl")
 include("energy_loss.jl")
 include("detected_events.jl")
-include("crab_flux.jl")
 
 export plot_coordinate!
 export plot_longalti!

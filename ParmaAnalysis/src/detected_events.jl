@@ -8,7 +8,7 @@ struct EnergyEvents
 end
 
 
-function plot_detected_events!(ax, energy, latitude, longitude, material::String, target::String; x_end=20., altitude=20.0, n_bin=64, area=100., label="", color=:auto, dx=0.000005, iteration=nothing, thickness=15.0, bin_max=20.0)
+function plot_detected_events!(ax, energy, latitude, longitude, material::String, target::String; x_end=20., altitude=20.0, n_bin=64, area=100., label="", color=:auto, dx=0.000005, iteration=nothing, thickness=15.0, bin_max=20.0, type=:histogram)
     s = getHP(iyear[], imonth[], iday[]) # W-index (solar activity)
 
     flux = get_fluxmean.(Ref(latitude), Ref(longitude), altitude, energy, s)
@@ -20,6 +20,7 @@ function plot_detected_events!(ax, energy, latitude, longitude, material::String
     S = extrapolate(S_interp, Linear())
     e_min = minimum(stopping_power.E)
 
+    println("Calculating detected events for $target with material $material...")
     for i in 1:lastindex(energy)-1
         dE = energy[i+1] - energy[i]
         e = energy[i] + dE * 0.5  # Use the midpoint for the energy
@@ -33,24 +34,38 @@ function plot_detected_events!(ax, energy, latitude, longitude, material::String
         bin_index = findfirst(x -> x >= e_detected, energy_events.energy)
         if isnothing(bin_index) || bin_index == 1
             # error("Detected energy $e_detected MeV is out of bounds for the defined energy range.")
-            print("Detected energy $e_detected MeV is out of bounds for the defined energy range. Skipping this event.\r")
+            print("\rDetected energy $e_detected MeV is out of bounds for the defined energy range. Skipping this event.")
             continue
         end
         bin_index -= 1  # minを超えた直後は1にしたいのでずらす
         energy_events.events[bin_index] += flux[i] * area * dE # エネルギーで積分
         # energy_events.events[bin_index] += 1
     end
+    println("")
+    
+    energy_keV = (energy_events.energy[1:end-1] + energy_events.energy[2:end]) / 2 * 1e3  # Convert energy to keV
+    events = energy_events.events[1:end-1]
 
-    l = barplot!(ax, energy_events.energy, energy_events.events,
-        label=label)
-    ax.xlabel = L"\mathrm{Detected\ energy\ (MeV)}"
-    ax.ylabel = L"\mathrm{Detected\ events\ (counts / s)}"
-    l.color = color == :auto ? l.color : color
+    if type == :histogram
+        l = barplot!(ax, energy_keV, events,
+            label=label)
+        ax.ylabel = L"\mathrm{Detected\ events\ (counts s^{-1})}"
+    elseif type == :line
+        bar_width_keV = (bin_max - 1e-2) / n_bin * 1e3
+        energy_events.events ./= bar_width_keV
+        l = lines!(ax, energy_keV, events,
+            label=label, linewidth=1.5)
+        ax.ylabel = L"\mathrm{Detected\ events\ (counts\ s^{-1}\ keV^{-1})}"
+    else
+        error("Unsupported plot type: $type")
+    end
+    ax.xlabel = L"\mathrm{Detected\ energy\ (keV)}"
+    color !== :auto && (l.color = color)
 
     l
 end
 
-function plot_detected_events_photon!(ax, energy, latitude, longitude; altitude=20.0, n_bin=64, area=100., label="", color=:auto, bin_max=20.0)
+function plot_detected_events_photon!(ax, energy, latitude, longitude; altitude=20.0, n_bin=64, area=100., label="", color=:auto, bin_max=20.0, type=:histogram)
     s = getHP(iyear[], imonth[], iday[]) # W-index (solar activity)
 
     flux = get_fluxmean.(Ref(latitude), Ref(longitude), altitude, energy, s)
@@ -76,16 +91,29 @@ function plot_detected_events_photon!(ax, energy, latitude, longitude; altitude=
         # energy_events.events[bin_index] += 1
     end
 
-    l = barplot!(ax, energy_events.energy, energy_events.events,
-        label=label)
-    ax.xlabel = L"\mathrm{Detected\ energy\ (MeV)}"
-    ax.ylabel = L"\mathrm{Detected\ events\ (counts / s)}"
-    l.color = color == :auto ? l.color : color
+    energy_keV = (energy_events.energy[1:end-1] + energy_events.energy[2:end]) / 2 * 1e3  # Convert energy to keV
+    events = energy_events.events[1:end-1]
+
+    if type == :histogram
+        l = barplot!(ax, energy_keV, events,
+            label=label)
+        ax.ylabel = L"\mathrm{Detected\ events\ (counts s^{-1})}"
+    elseif type == :line
+        bar_width_keV = (bin_max - 1e-2) / n_bin * 1e3
+        energy_events.events ./= bar_width_keV
+        l = lines!(ax, energy_keV, events,
+            label=label, linewidth=1.5)
+        ax.ylabel = L"\mathrm{Detected\ events\ (counts\ s^{-1}\ keV^{-1})}"
+    else
+        error("Unsupported plot type: $type")
+    end
+    ax.xlabel = L"\mathrm{Detected\ energy\ (keV)}"
+    color !== :auto && (l.color = color)
 
     l
 end
 
-function plot_detected_events_crab!(ax, energy; altitude=20.0, n_bin=64, area=100., label="", color=:auto, bin_max=20.0)
+function plot_detected_events_crab!(ax, energy; altitude=20.0, n_bin=64, area=100., label="", color=:auto, bin_max=20.0, type=:histogram)
     s = getHP(iyear[], imonth[], iday[]) # W-index (solar activity)
 
     flux = Crab_photon_flux(energy)
@@ -111,11 +139,24 @@ function plot_detected_events_crab!(ax, energy; altitude=20.0, n_bin=64, area=10
         # energy_events.events[bin_index] += 1
     end
 
-    l = barplot!(ax, energy_events.energy, energy_events.events,
-        label=label)
+    energy_keV = (energy_events.energy[1:end-1] + energy_events.energy[2:end]) / 2
+    events = energy_events.events[1:end-1]
+
+    if type == :histogram
+        l = barplot!(ax, energy_keV, events,
+            label=label)
+        ax.ylabel = L"\mathrm{Detected\ events\ (counts s^{-1})}"
+    elseif type == :line
+        bar_width_keV = (bin_max - 1e-2) / n_bin * 1e3
+        energy_events.events ./= bar_width_keV
+        l = lines!(ax, energy_keV, events,
+            label=label, linewidth=1.5)
+        ax.ylabel = L"\mathrm{Detected\ events\ (counts\ s^{-1}\ keV^{-1})}"
+    else
+        error("Unsupported plot type: $type")
+    end
     ax.xlabel = L"\mathrm{Detected\ energy\ (keV)}"
-    ax.ylabel = L"\mathrm{Detected\ events\ (counts / s)}"
-    l.color = color == :auto ? l.color : color
+    color !== :auto && (l.color = color)
 
     l
 end
