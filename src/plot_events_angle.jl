@@ -109,7 +109,8 @@ end
 Label(fig[1, :, Top()], title, fontsize=22, padding=(0, 0, 10, 0))
 
 
-save(joinpath(@__DIR__, "..", "figures", "detected_events_angle_$(target)_$(material).png"), fig)
+filename = (target == :all ? "detected_events_angle_all" : "detected_events_angle_$(target)_$(material)") * ".png"
+save(joinpath(@__DIR__, "..", "figures", filename), fig)
 
 fig
 

@@ -69,40 +69,43 @@ end
 function plot_detected_events_photon!(ax, energy, latitude, longitude; altitude=20.0, n_bin=64, area=100., label="", color=:auto, bin_max=20.0, type=:histogram)
     s = getHP(iyear[], imonth[], iday[]) # W-index (solar activity)
 
-    flux = get_fluxmean.(Ref(latitude), Ref(longitude), altitude, energy, s)
-    energy_events = StructArray{EnergyEvents}(energy=range(1e-2, stop=bin_max, length=n_bin), events=zeros(n_bin))
-
-    for i in 1:lastindex(energy)-1
-        dE = energy[i+1] - energy[i]
-        e = energy[i] + dE * 0.5  # Use the midpoint for the energy
-        e_detected = e
-
-        if e_detected < 0.
-            error("Detected energy is non-positive for energy $e MeV")
-        end
-
-        bin_index = findfirst(x -> x >= e_detected, energy_events.energy)
-        if isnothing(bin_index) || bin_index == 1
-            # error("Detected energy $e_detected MeV is out of bounds for the defined energy range.")
-            print("Detected energy $e_detected MeV is out of bounds for the defined energy range. Skipping this event.\r")
-            continue
-        end
-        bin_index -= 1  # minを超えた直後は1にしたいのでずらす
-        energy_events.events[bin_index] += flux[i] * area * dE # エネルギーで積分
-        # energy_events.events[bin_index] += 1
-    end
-
-    energy_keV = (energy_events.energy[1:end-1] + energy_events.energy[2:end]) * 0.5 * 1e3  # Convert energy to keV
-    events = energy_events.events[1:end-1]
-
+    println("Calculating detected events for photon...")
     if type == :histogram
+        flux = get_fluxmean.(Ref(latitude), Ref(longitude), altitude, energy, s)
+        energy_events = StructArray{EnergyEvents}(energy=range(1e-2, stop=bin_max, length=n_bin), events=zeros(n_bin))
+
+        for i in 1:lastindex(energy)-1
+            dE = energy[i+1] - energy[i]
+            e = energy[i] + dE * 0.5  # Use the midpoint for the energy
+            e_detected = e
+
+            if e_detected < 0.
+                error("Detected energy is non-positive for energy $e MeV")
+            end
+
+            bin_index = findfirst(x -> x >= e_detected, energy_events.energy)
+            if isnothing(bin_index) || bin_index == 1
+                # error("Detected energy $e_detected MeV is out of bounds for the defined energy range.")
+                print("Detected energy $e_detected MeV is out of bounds for the defined energy range. Skipping this event.\r")
+                continue
+            end
+            bin_index -= 1  # minを超えた直後は1にしたいのでずらす
+            energy_events.events[bin_index] += flux[i] * area * dE # エネルギーで積分
+            # energy_events.events[bin_index] += 1
+        end
+
+        energy_keV = (energy_events.energy[1:end-1] + energy_events.energy[2:end]) * 0.5 * 1e3  # Convert energy to keV
+        events = energy_events.events[1:end-1]
+
         l = barplot!(ax, energy_keV, events,
             label=label)
         ax.ylabel = L"\mathrm{Detected\ events\ (counts s^{-1})}"
     elseif type == :line
-        bar_width_keV = (bin_max - 1e-2) / n_bin * 1e3
-        println(bar_width_keV)
-        events ./= bar_width_keV
+        energy_MeV = range(energy[1], stop=bin_max, length=n_bin)
+        flux = get_fluxmean.(Ref(latitude), Ref(longitude), altitude, energy_MeV, s)
+        energy_keV = energy_MeV * 1e3
+        events = flux .* area * 1e-3 # (/cm^2/s/(MeV/n)) -> (/s/(keV/n))
+        # Normalize events by the bin width in keV
         l = lines!(ax, energy_keV, events,
             label=label, linewidth=1.5)
         ax.ylabel = L"\mathrm{Detected\ events\ (counts\ s^{-1}\ keV^{-1})}"
@@ -115,46 +118,51 @@ function plot_detected_events_photon!(ax, energy, latitude, longitude; altitude=
     l
 end
 
-function plot_detected_events_crab!(ax, energy; altitude=20.0, n_bin=64, area=100., label="", color=:auto, bin_max=20.0, type=:histogram)
+function plot_detected_events_crab!(ax, energy; altitude=20.0, n_bin=64, area=100., label="", color=:auto, bin_max=20.0, type=:histogram, magnification=1.0)
     s = getHP(iyear[], imonth[], iday[]) # W-index (solar activity)
 
-    energy *= 1e3
+    println("Calculating detected events for Crab...")
+
     bin_max *= 1e3
-    flux = Crab_photon_flux(energy)
-    # energy [keV], bin_max [keV]
-    energy_events = StructArray{EnergyEvents}(energy=range(1e-2, stop=bin_max, length=n_bin), events=zeros(n_bin))
+    energy *= 1e3
 
-    for i in 1:lastindex(energy)-1
-        dE = energy[i+1] - energy[i]
-        e = energy[i] + dE * 0.5  # Use the midpoint for the energy
-        e_detected = e
-
-        if e_detected < 0.
-            error("Detected energy is non-positive for energy $e keV")
-        end
-
-        bin_index = findfirst(x -> x >= e_detected, energy_events.energy)
-        if isnothing(bin_index) || bin_index == 1
-            # error("Detected energy $e_detected MeV is out of bounds for the defined energy range.")
-            print("Detected energy $e_detected keV is out of bounds for the defined energy range. Skipping this event.\r")
-            continue
-        end
-        bin_index -= 1  # minを超えた直後は1にしたいのでずらす
-        energy_events.events[bin_index] += flux[i] * area * dE # エネルギーで積分
-        # energy_events.events[bin_index] += 1
-    end
-
-    energy_keV = (energy_events.energy[1:end-1] + energy_events.energy[2:end]) * 0.5
-    events = energy_events.events[1:end-1]
-
-    println(events)
     if type == :histogram
+        flux = Crab_photon_flux(energy)
+
+        # energy [keV], bin_max [keV]
+        energy_events = StructArray{EnergyEvents}(energy=range(1e-2, stop=bin_max, length=n_bin), events=zeros(n_bin))
+
+        for i in 1:lastindex(energy)-1
+            dE = energy[i+1] - energy[i]
+            e = energy[i] + dE * 0.5  # Use the midpoint for the energy
+            e_detected = e
+
+            if e_detected < 0.
+                error("Detected energy is non-positive for energy $e keV")
+            end
+
+            bin_index = findfirst(x -> x >= e_detected, energy_events.energy)
+            if isnothing(bin_index) || bin_index == 1
+                # error("Detected energy $e_detected MeV is out of bounds for the defined energy range.")
+                print("Detected energy $e_detected keV is out of bounds for the defined energy range. Skipping this event.\r")
+                continue
+            end
+            bin_index -= 1  # minを超えた直後は1にしたいのでずらす
+            energy_events.events[bin_index] += flux[i] * area * magnification * dE # エネルギーで積分
+            # energy_events.events[bin_index] += 1
+        end
+
+        energy_keV = (energy_events.energy[1:end-1] + energy_events.energy[2:end]) * 0.5
+        events = energy_events.events[1:end-1]
+
         l = barplot!(ax, energy_keV, events,
             label=label)
         ax.ylabel = L"\mathrm{Detected\ events\ (counts\ s^{-1})}"
+
     elseif type == :line
-        bar_width_keV = (bin_max - 1e-2) / n_bin
-        events ./= bar_width_keV
+        energy_keV = range(energy[1], stop=bin_max, length=n_bin)
+        flux = Crab_photon_flux(energy_keV)
+        events = flux .* area .* magnification
         l = lines!(ax, energy_keV, events,
             label=label, linewidth=1.5)
         ax.ylabel = L"\mathrm{Detected\ events\ (counts\ s^{-1}\ keV^{-1})}"
@@ -170,6 +178,8 @@ end
 
 function plot_detected_events_photon_angle!(ax, energy, latitude, longitude, zenith; altitude=20.0, n_bin=64, area=100., label="", color=:auto, bin_max=20.0, type=:histogram)
     s = getHP(iyear[], imonth[], iday[]) # W-index (solar activity)
+
+    println("Calculating detected events for photon within zenith angle $zenith...")
 
     flux = get_fluxmean_angle.(Ref(latitude), Ref(longitude), altitude, energy, s, Ref(zenith))
     energy_events = StructArray{EnergyEvents}(energy=range(1e-2, stop=bin_max, length=n_bin), events=zeros(n_bin))
@@ -205,6 +215,68 @@ function plot_detected_events_photon_angle!(ax, energy, latitude, longitude, zen
         bar_width_keV = (bin_max - 1e-2) / n_bin * 1e3
         println(bar_width_keV)
         events ./= bar_width_keV
+        l = lines!(ax, energy_keV, events,
+            label=label, linewidth=1.5)
+        ax.ylabel = L"\mathrm{Detected\ events\ (counts\ s^{-1}\ keV^{-1})}"
+    else
+        error("Unsupported plot type: $type")
+    end
+    ax.xlabel = L"\mathrm{Detected\ energy\ (keV)}"
+    color !== :auto && (l.color = color)
+
+    l
+end
+
+function plot_detected_events_photon_albedo_crab!(ax, energy, latitude, longitude; altitude=20.0, n_bin=64, area=100., label="", color=:auto, bin_max=20.0, type=:histogram, magnification=1.0)
+    s = getHP(iyear[], imonth[], iday[]) # W-index (solar activity)
+
+    println("Calculating detected events for Crab and albedo photon...")
+
+    bin_max *= 1e3
+    energy_MeV = energy
+    energy *= 1e3
+
+    if type == :histogram
+        flux_albedo = get_fluxmean.(Ref(latitude), Ref(longitude), altitude, energy_MeV, s)
+        flux_albedo *= 1e-3 # (/cm^2/s/(MeV/n)) -> (/cm^2/s/(keV/n))
+        flux_crab = Crab_photon_flux(energy)
+
+        # energy [keV], bin_max [keV]
+        energy_events = StructArray{EnergyEvents}(energy=range(1e-2, stop=bin_max, length=n_bin), events=zeros(n_bin))
+
+        for i in 1:lastindex(energy)-1
+            dE = energy[i+1] - energy[i]
+            e = energy[i] + dE * 0.5  # Use the midpoint for the energy
+            e_detected = e
+
+            if e_detected < 0.
+                error("Detected energy is non-positive for energy $e keV")
+            end
+
+            bin_index = findfirst(x -> x >= e_detected, energy_events.energy)
+            if isnothing(bin_index) || bin_index == 1
+                # error("Detected energy $e_detected MeV is out of bounds for the defined energy range.")
+                print("Detected energy $e_detected keV is out of bounds for the defined energy range. Skipping this event.\r")
+                continue
+            end
+            bin_index -= 1  # minを超えた直後は1にしたいのでずらす
+            energy_events.events[bin_index] += (flux_albedo[i] + flux_crab[i] * magnification) * area * dE # エネルギーで積分
+            # energy_events.events[bin_index] += 1
+        end
+
+        energy_keV = (energy_events.energy[1:end-1] + energy_events.energy[2:end]) * 0.5
+        events = energy_events.events[1:end-1]
+
+        l = barplot!(ax, energy_keV, events,
+            label=label)
+        ax.ylabel = L"\mathrm{Detected\ events\ (counts\ s^{-1})}"
+
+    elseif type == :line
+        energy_keV = range(energy[1], stop=bin_max, length=n_bin)
+        flux_crab = Crab_photon_flux(energy_keV)
+        flux_albedo = get_fluxmean.(Ref(latitude), Ref(longitude), altitude, energy_keV * 1e-3, s)
+        flux_albedo *= 1e-3 # (/cm^2/s/(MeV/n)) -> (/cm^2/s/(keV/n))
+        events = (flux_albedo + flux_crab .* magnification) .* area
         l = lines!(ax, energy_keV, events,
             label=label, linewidth=1.5)
         ax.ylabel = L"\mathrm{Detected\ events\ (counts\ s^{-1}\ keV^{-1})}"

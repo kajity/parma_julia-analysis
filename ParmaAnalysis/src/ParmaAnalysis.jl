@@ -29,5 +29,6 @@ export plot_detected_events_photon!
 export plot_detected_events_crab!
 export plot_Crab_photon_flux!
 export plot_detected_events_photon_angle!
+export plot_detected_events_photon_albedo_crab!
 
 end # module ParmaAnalysis

@@ -3,6 +3,7 @@ using Pkg
 Pkg.develop(path=joinpath(@__DIR__, "..", "ParmaAnalysis"))
 using ParmaAnalysis
 using CairoMakie
+using Printf
 
 # target = :e  # Electron
 # target = :p  # Proton
@@ -12,6 +13,9 @@ target = :all
 
 plot_type = :line
 # plot_type = :histogram
+
+# telescope_magnification = 30.
+telescope_magnification = 1.
 
 material = :cadmium
 bin_max = 0.0
@@ -46,7 +50,7 @@ elseif (target == :Crab)
 elseif (target == :all)
   bin_max = 5e-2
   energy = range(1e-2, stop=5e-2, length=20000)
-  y_max = 1e2
+  y_max = telescope_magnification < 2.0 ? 1e2 : 1e4
   y_min = 1e-6
 else
   error("Unsupported target: $target")
@@ -95,16 +99,19 @@ elseif target == :all
   plot_detected_events_photon!(ax, energy, latitude, longitude,
     altitude=altitude, label="photon", n_bin=n_bin, area=100., bin_max=bin_max, type=plot_type, color=:orange)
   energy_crab = range(5e-3, stop=bin_max, length=energy.len)
-  plot_detected_events_crab!(ax, energy_crab, altitude=altitude, label="Crab", n_bin=n_bin, area=100., bin_max=bin_max, type=plot_type)
+  label = "Crab ($(@sprintf("%.1f", telescope_magnification))x)"
+  plot_detected_events_crab!(ax, energy_crab, altitude=altitude, label=label, n_bin=n_bin, area=100., bin_max=bin_max, type=plot_type, magnification=telescope_magnification)
   material = :cadmium
+  plot_detected_events_photon_albedo_crab!(ax, energy, latitude, longitude,
+    altitude=altitude, label="albedo + Crab", n_bin=n_bin, area=100., bin_max=bin_max, type=plot_type, color=:blue, magnification=telescope_magnification)
   Legend(fig[:, 2], ax)
 else
   error("Unsupported target: $target")
 end
 Label(fig[1, :, Top()], title, fontsize=22, padding=(0, 0, 10, 0))
 
-
-save(joinpath(@__DIR__, "..", "figures", "detected_events_$(target)_$(material).png"), fig)
+filename = (target == :all ? "detected_events_all" : "detected_events_$(target)_$(material)") * ".png"
+save(joinpath(@__DIR__, "..", "figures", filename), fig)
 
 fig
 
