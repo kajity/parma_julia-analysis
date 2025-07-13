@@ -84,8 +84,8 @@ function get_fluxmean_angdiff(lat::AbstractVector{Float64}, lon::AbstractVector{
 end
 
 function get_fluxmean_angle(lat::AbstractVector{Float64}, lon::AbstractVector{Float64}, alti::Float64, energy::Float64, s::Float64, angle::AbstractVector{Float64})
-  flux_angdiff = @. get_fluxmean_angdiff(Ref(lat), Ref(lon), alti, energy, s, angle)
-  factor = @. 2π(1 - cos(angle))  # Solid angle factor
+  flux_angdiff = get_fluxmean_angdiff.(Ref(lat), Ref(lon), alti, energy, s, angle)
+  factor = @. 2π*(1 - cos(angle))  # Solid angle factor
   ang_step = angle[2] - angle[1]  # Angular step size
   flux_angdiff .= flux_angdiff .* factor * ang_step
   sum(flux_angdiff)

@@ -5,8 +5,8 @@ using ParmaAnalysis
 using CairoMakie
 
 
-# target = :p  # Proton
-target = :e  # Electron
+target = :p  # Proton
+# target = :e  # Electron
 
 material = :none
 if (target == :e)
@@ -40,6 +40,6 @@ plot_stopping_power!(ax, energy, material, target,
   label="proton", dx=0.000005,)
 Label(fig[1, :, Top()], title, fontsize=22, padding=(0, 0, 10, 0))
 
-# save(joinpath(@__DIR__, "..", "figures", "stopping_power_$material.png"), fig)
+save(joinpath(@__DIR__, "..", "figures", "stopping_power_$material.png"), fig)
 fig
 

@@ -147,6 +147,7 @@ function plot_detected_events_crab!(ax, energy; altitude=20.0, n_bin=64, area=10
     energy_keV = (energy_events.energy[1:end-1] + energy_events.energy[2:end]) * 0.5
     events = energy_events.events[1:end-1]
 
+    println(events)
     if type == :histogram
         l = barplot!(ax, energy_keV, events,
             label=label)

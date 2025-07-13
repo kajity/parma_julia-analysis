@@ -3,12 +3,13 @@ using Pkg
 Pkg.develop(path=joinpath(@__DIR__, "..", "ParmaAnalysis"))
 using ParmaAnalysis
 using CairoMakie
+using Printf
 
 # target = :e  # Electron
 # target = :p  # Proton
-target = :photon  # Photon
+# target = :photon  # Photon
 # target = :Crab  # Crab Nebula Photon Flux
-# target = :all
+target = :all
 
 plot_type = :line
 # plot_type = :histogram
@@ -69,7 +70,10 @@ ax = Axis(
 
 if target == :photon
   plot_detected_events_photon_angle!(ax, energy, latitude, longitude, zenith,
-    altitude=altitude, label=target, n_bin=n_bin, area=100., bin_max=bin_max, type=plot_type)
+    label="photon 〜$(@sprintf("%.1f", zenith[end] * 180 / π))°", altitude=altitude, n_bin=n_bin, area=100., bin_max=bin_max, type=plot_type)
+  plot_detected_events_photon!(ax, energy, latitude, longitude,
+    label="photon all range", altitude=altitude, n_bin=n_bin, area=100., bin_max=bin_max, type=plot_type)
+  Legend(fig[:, 2], ax)
 elseif target == :Crab
   plot_detected_events_crab!(ax, energy,
     altitude=altitude, label=target, n_bin=n_bin, area=100., bin_max=bin_max, type=plot_type)
@@ -94,7 +98,7 @@ elseif target == :all
   ParmaAnalysis.ip[] = 33
   material = :cadmium
   plot_detected_events_photon_angle!(ax, energy, latitude, longitude, zenith,
-    altitude=altitude, label="photon", n_bin=n_bin, area=100., bin_max=bin_max, type=plot_type, color=:orange)
+    altitude=altitude, label="photon 〜$(@sprintf("%.1f", zenith[end] * 180 / π))°", n_bin=n_bin, area=100., bin_max=bin_max, type=plot_type, color=:orange)
   energy_crab = range(5e-3, stop=bin_max, length=energy.len)
   plot_detected_events_crab!(ax, energy_crab, altitude=altitude, label="Crab", n_bin=n_bin, area=100., bin_max=bin_max, type=plot_type)
   material = :cadmium
