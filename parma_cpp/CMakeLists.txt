@@ -2,10 +2,7 @@ cmake_minimum_required(VERSION 3.10)
 project(parma_cpp CXX)
 
 set(DATADIR ${CMAKE_CURRENT_SOURCE_DIR})
-configure_file(
-    ${CMAKE_CURRENT_SOURCE_DIR}/config.h.in
-    ${CMAKE_BINARY_DIR}/config.h
-)
+add_compile_definitions(DATADIR="${DATADIR}")
 include_directories(${CMAKE_BINARY_DIR})
 
 set(PARMA_SUBROUTINES ${CMAKE_CURRENT_SOURCE_DIR}/subroutines.cpp)

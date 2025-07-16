@@ -10,7 +10,6 @@ double getSpecCpp(int, double, double, double, double, double);
 double getSpecAngFinalCpp(int, double, double, double, double, double, double);
 }
 
-#include "config.h"
 int main()
 {
   namespace fs = std::filesystem;

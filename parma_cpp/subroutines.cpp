@@ -7,7 +7,6 @@
 #include <sstream>
 #include <string>
 
-#include "config.h"
 
 #define ERROR_MESSAGE_NOEXIST(file_name) \
   namespace fs = std::filesystem;        \
