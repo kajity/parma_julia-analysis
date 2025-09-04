@@ -5,14 +5,14 @@ using ParmaAnalysis
 using CairoMakie
 using Printf
 
-func = :coordinate
-# func = :latalti
+# func = :coordinate
+func = :latalti
 # func = :longalti
 
-target = :p  # Proton
+# target = :p  # Proton
 # target = :n  # Neutron
 # target = :e  # Electron
-# target = :photon  # Photon
+target = :photon  # Photon
 
 lat = []
 lon = []
@@ -23,19 +23,19 @@ if func == :coordinate
   lat = range(-90, stop=90, length=300)
   lon = range(-180, stop=180, length=300)
   alti = range(0, stop=81, length=9)
-  energy = 0.01
+  energy = 0.1
   # alti = 20.0
   # energy = exp10.(range(-1, stop=3, length=9))
 elseif func == :latalti
   lat = range(-90, stop=90, length=300)
   alti  = range(0, stop=81, length=300)
   lon = range(-180, stop=180, length=9)
-  energy = 100.0
+  energy = 0.1
 elseif func == :longalti
   lon = range(-180, stop=180, length=300)
   alti = range(0, stop=81, length=300)
   lat = range(-90, stop=90, length=9)
-  energy = 10.0
+  energy = 0.1
 else
   error("Unsupported func: $func")
 end
@@ -56,7 +56,7 @@ set_theme!(theme_latexfonts())
 fig = Figure(size=(1500, 800), fontsize=12, fonts=(; regular="Dejavu", weird="Blackchancery"))
 
 # title = L"\mathrm{angular\ integrated\ flux\ (neutron, 100 MeV)\ (/cm^2/s/(MeV/n))}"
-title = L"\mathrm{angular\ integrated\ flux\ (%$(ParmaAnalysis.ip_name()), 20 km)\ (/cm^2/s/(MeV/n))}"
+title = L"\mathrm{angular\ integrated\ flux\ (%$(ParmaAnalysis.ip_name()))\ (/cm^2/s/(MeV/n))}"
 
 
 if func == :coordinate
@@ -71,6 +71,6 @@ end
 
   isaltitudevector = alti isa AbstractVector
   axistitle = !isaltitudevector ? "a$(@sprintf("%.1f", alti))" : "e$(@sprintf("%.1f", energy))"
-save("./figures/flux_$(func)_$(target)_$(axistitle).png", fig)
+# save(joinpath(@__DIR__, "..", "figures", "flux_$(func)_$(target)_$(axistitle).png"), fig)
 println("Title: $title")
 fig

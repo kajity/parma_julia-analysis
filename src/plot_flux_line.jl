@@ -13,10 +13,10 @@ using Printf
 # situation = "north"
 situation = "Fort_Sumner"
 
-# x_axis = :energy
+x_axis = :energy
 # x_axis = :height
 # x_axis = :angle
-x_axis = :angle_factor
+# x_axis = :angle_factor
 
 particles = []  # List of particles to plot
 energy = []
@@ -60,6 +60,8 @@ if x_axis == :energy
   particles = [(0, :blue), (1, :red), (31, :green), (33, :orange), (29, :purple),]  # Particle IDs for different particles
   energy = exp10.(range(-2.0, stop=5.0, length=300))
   altitude = [20.0] # Altitude in km
+  ax.limits = (energy[1], energy[end],nothing, nothing)
+  ax.yticks = LogTicks(-15:1:4)
 elseif x_axis == :height
   # Plotting :angle
   particles = [(0, :blue), (1, :red), (31, :green), (33, :orange),]
@@ -74,11 +76,10 @@ elseif x_axis == :angle_factor || x_axis == :angle
   energy = [5e-2]  # Fixed energy in MeV
   altitude = [20.0]  # Fixed altitude in km
   angle = range(0, stop=π, length=1000)  # Angle in radians
-  x_ticks = range(0, stop=π, length=7)
-  x_ticks_factor = x_ticks ./ π
   ax.xscale = identity
-  ax.xticks = range(0, stop=π, length=5)
-  ax.xtickformat = values -> ["$(@sprintf("%.2f", value / π)) π" for value in values]
+  # ax.xticks = range(0, stop=π, length=5)
+  # ax.xtickformat = values -> ["$(@sprintf("%.2f", value / π)) π" for value in values]
+  ax.xticks = Makie.MultiplesTicks(5, π, "π")
 else
   error("Unsupported x_axis: $x_axis")
 end
@@ -109,5 +110,5 @@ Legend(fig[:, 2], ax)
 title = "Angular integrated flux for $(situation) ($(x_axis) vs flux)"
 Label(fig[0, :], title, fontsize=18)
 
-# save("./figures/flux_$(x_axis)_$(situation).png", fig)
+save(joinpath(@__DIR__, "..", "figures", "flux_$(x_axis)_$(situation).png"), fig)
 fig

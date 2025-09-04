@@ -47,7 +47,7 @@ function plot_longalti!(fig, longitude, altitude, num=(3, 3); latitude::FluxArg=
   colgap!(fig.layout, 20)
 
   Colorbar(fig[:, end+1], hms[1], label="Flux", labelrotation=π / 2)
-  Label(fig[0, :], title, fontsize=22)
+  # Label(fig[0, :], title, fontsize=22)
   Label(fig[end+1, :], L"\mathrm{Longitude}\ (\degree)", fontsize=18)
   Label(fig[:, 0], L"\mathrm{Altitude}\ (\degree)", fontsize=18, rotation=π / 2)
   resize_to_layout!(fig)
@@ -97,7 +97,7 @@ function plot_latalti!(fig, latitude, altitude, num=(3, 3); longitude::FluxArg=0
   colgap!(fig.layout, 20)
 
   Colorbar(fig[:, end+1], hms[1], label="Flux", labelrotation=π / 2)
-  Label(fig[0, :], title, fontsize=22)
+  # Label(fig[0, :], title, fontsize=22)
   Label(fig[end+1, :], L"\mathrm{Latitude}\ (\degree)", fontsize=18)
   Label(fig[:, 0], L"\mathrm{Altitude}\ (\degree)", fontsize=18, rotation=π / 2)
   resize_to_layout!(fig)
