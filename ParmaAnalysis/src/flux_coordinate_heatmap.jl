@@ -4,7 +4,7 @@ using LaTeXStrings
 using LinearAlgebra
 using Printf
 
-function plot_coordinate!(fig, latitude, longitude, num=(3, 3); altitude::FluxArg=0.0, energy::FluxArg=100.0, title="", colorrange=:auto, colorscale=log10)
+function plot_coordinate!(fig, latitude, longitude, num=(3, 3); altitude::FluxArg=0.0, energy::FluxArg=100.0, title="", colorrange=:auto, logscale=false, colormap=:inferno)
   println("Plotting flux (longitude, latitude)...")
 
   s = getHP(iyear[], imonth[], iday[]) # W-index (solar activity)
@@ -25,8 +25,12 @@ function plot_coordinate!(fig, latitude, longitude, num=(3, 3); altitude::FluxAr
     flux = @. getSpec(ip[], s, getr(latitude', longitude), getd(alti, latitude'), e, g[])
     push!(flux_extrema, extrema(flux)...)
     hm = heatmapadd!(fig, (i, j, numi, numj), longitude, latitude, flux;
-      xticks=(-180:60:180), yticks=(-90:30:90), axistitle=axistitle,
-      colorrange=colorrange, colorscale=colorscale, geo=true)
+      xticks=(-180:60:180),
+      yticks=(-90:30:90),
+      axistitle=axistitle,
+      colormap=(colormap, 0.85),
+      colorscale=logscale ? log10 : identity,
+      geo=true)
     push!(hms, hm)
 
   end
@@ -39,7 +43,7 @@ function plot_coordinate!(fig, latitude, longitude, num=(3, 3); altitude::FluxAr
   colgap!(fig.layout, 20)
 
   Colorbar(fig[:, end+1], hms[1], label="Flux", labelrotation=π / 2)
-  Label(fig[0, :], title, fontsize=30)
+  # Label(fig[0, :], title, fontsize=30)
   Label(fig[end+1, :], L"\mathrm{Longitude}\ (\degree)", fontsize=18)
   Label(fig[:, 0], L"\mathrm{Latitude}\ (\degree)", fontsize=18, rotation=π / 2)
   resize_to_layout!(fig)
