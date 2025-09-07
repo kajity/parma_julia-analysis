@@ -46,5 +46,5 @@ Label(fig[1, 1, Top()], title, fontsize=22, padding=(0, 0, 10, 0))
 
 resize_to_layout!(fig)
 
-save(joinpath(@__DIR__, "..", "figures", "energyloss_$material.png"), fig)
+# save(joinpath(@__DIR__, "..", "figures", "energyloss_$material.png"), fig)
 fig

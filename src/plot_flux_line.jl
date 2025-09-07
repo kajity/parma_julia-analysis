@@ -54,13 +54,15 @@ ax = Axis(
   xscale=log10,
   yscale=log10,
 )
+ax.xlabelsize = 18
+ax.ylabelsize = 18
 
 if x_axis == :energy
   # Plotting energy vs flux
   particles = [(0, :blue), (1, :red), (31, :green), (33, :orange), (29, :purple),]  # Particle IDs for different particles
   energy = exp10.(range(-2.0, stop=5.0, length=300))
   altitude = [20.0] # Altitude in km
-  ax.limits = (energy[1], energy[end],nothing, nothing)
+  ax.limits = (energy[1], energy[end], nothing, nothing)
   ax.yticks = LogTicks(-15:1:4)
 elseif x_axis == :height
   # Plotting :angle
@@ -108,7 +110,8 @@ end
 
 Legend(fig[:, 2], ax)
 title = "Angular integrated flux for $(situation) ($(x_axis) vs flux)"
-Label(fig[0, :], title, fontsize=18)
+# Label(fig[0, :], title, fontsize=18)
+println("Title: $title")
 
 save(joinpath(@__DIR__, "..", "figures", "flux_$(x_axis)_$(situation).png"), fig)
 fig

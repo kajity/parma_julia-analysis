@@ -68,7 +68,7 @@ function plot_detected_energy!(ax, energy, material, target; label="proton", dx=
 
   # Plot the detected flux
   l = lines!(ax, energy, energy_detected,
-    linewidth=1.5, label="$label ($material)")
+    linewidth=1.5, label="$label")
   ax.xlabel = L"\mathrm{Energy\ (MeV)}"
   ax.ylabel = L"\mathrm{Detected\ energy\ (MeV)}"
   ax.titlesize = 22
