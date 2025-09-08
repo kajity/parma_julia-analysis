@@ -14,6 +14,13 @@ function Crab_photon_flux(energy::AbstractVector{Float64})
   @. N * energy^(-gamma)
 end
 
+function Crab_photon_flux(energy::Float64)
+  N = 9.71
+  gamma = 2.106
+
+  N * energy^(-gamma)
+end
+
 function plot_Crab_photon_flux!(ax, energy::AbstractVector{Float64}; label::String="")
   flux = Crab_photon_flux(energy)
 

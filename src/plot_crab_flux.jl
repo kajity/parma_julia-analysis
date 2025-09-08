@@ -20,6 +20,6 @@ ax = Axis(
 
 plot_Crab_photon_flux!(ax, energy, label="Crab Nebula Photon Flux")
 Label(fig[1, :, Top()], "Crab Nebula Photon Flux", fontsize=22, padding=(0, 0, 10, 0))
-save(joinpath(@__DIR__, "..", "figures", "crab_photon_flux.pdf"), fig)
+# save(joinpath(@__DIR__, "..", "figures", "crab_photon_flux.pdf"), fig)
 
 fig

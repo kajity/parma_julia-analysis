@@ -60,7 +60,7 @@ ax.ylabelsize = 18
 if x_axis == :energy
   # Plotting energy vs flux
   particles = [(0, :blue), (1, :red), (31, :green), (33, :orange), (29, :purple),]  # Particle IDs for different particles
-  energy = exp10.(range(-2.0, stop=5.0, length=300))
+  energy = logrange(1e-2, 1e5, length=300)  # Energy in MeV
   altitude = [20.0] # Altitude in km
   ax.limits = (energy[1], energy[end], nothing, nothing)
   ax.yticks = LogTicks(-15:1:4)
@@ -113,5 +113,5 @@ title = "Angular integrated flux for $(situation) ($(x_axis) vs flux)"
 # Label(fig[0, :], title, fontsize=18)
 println("Title: $title")
 
-save(joinpath(@__DIR__, "..", "figures", "flux_$(x_axis)_$(situation).png"), fig)
+# save(joinpath(@__DIR__, "..", "figures", "flux_$(x_axis)_$(situation).png"), fig)
 fig

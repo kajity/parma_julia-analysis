@@ -25,7 +25,7 @@ if func == :coordinate
   alti = range(0, stop=81, length=9)
   energy = 0.1
   # alti = 20.0
-  # energy = exp10.(range(-1, stop=3, length=9))
+  # energy = logrange(1e-1, 1e3, length=9)
 elseif func == :latalti
   lat = range(-90, stop=90, length=300)
   alti  = range(0, stop=81, length=300)

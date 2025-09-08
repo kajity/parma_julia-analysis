@@ -19,7 +19,7 @@ else
   error("Unsupported target: $target")
 end
 
-energy = exp10.(range(-3, stop=5, length=2000))
+energy = logrange(1e-3, 1e5, length=2000) # stopping power data is supported up to 10^4 MeV!!
 latitude = [34.8]
 longitude = [-104.2]
 title = "Stopping power of $material for $target"
@@ -30,7 +30,7 @@ ax = Axis(
   fig[1, 1],
   xscale=log10,
   yscale=log10,
-  xticks=exp10.(-3:1:5),
+  xticks=LogTicks(-3:5),
   limits=(energy[1], energy[end], nothing, nothing),
 )
 ax.xlabelsize = 18

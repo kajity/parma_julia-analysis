@@ -15,7 +15,7 @@ limits2 = []
 yticks2 = Makie.automatic
 
 # energy = range(0.1, stop=1000., length=2000)
-energy = exp10.(range(-2, stop=5, length=2000)) # stopping power data is supported up to 10^4 MeV!!
+energy = logrange(1e-2, 1e5, length=2000) # stopping power data is supported up to 10^4 MeV!!
 latitude = [34.8]
 longitude = [-104.2]
 altitude = 20.0
