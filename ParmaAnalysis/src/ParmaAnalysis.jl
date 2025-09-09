@@ -30,5 +30,6 @@ export plot_detected_events_crab!
 export plot_Crab_photon_flux!
 export plot_detected_events_photon_angle!
 export plot_detected_events_photon_albedo_crab!
+export get_binned_events_data
 
 end # module ParmaAnalysis

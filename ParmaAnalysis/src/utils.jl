@@ -50,13 +50,16 @@ function check_fluxarg(length, args...)
   end
 end
 
-
-function get_fluxmean(lat::AbstractVector{Float64}, lon::AbstractVector{Float64}, alti::Float64, energy::Float64, s::Float64)
-  flux_mat = @. getSpec(ip[], s, getr(lat, lon'), getd(alti, lat), energy, g[]) # flux_mat[lat, lon]
+function get_fluxmean(lat::AbstractVector{Float64}, lon::AbstractVector{Float64}, alti::Float64, energy::Float64, s::Float64, ip)
+  flux_mat = @. getSpec(ip, s, getr(lat, lon'), getd(alti, lat), energy, g[]) # flux_mat[lat, lon]
   factor = @. cosd(lat)
   flux_mat .= flux_mat .* factor
   area = sum(factor) * size(lon, 1)
   sum(flux_mat) / area
+end
+
+function get_fluxmean(lat::AbstractVector{Float64}, lon::AbstractVector{Float64}, alti::Float64, energy::Float64, s::Float64)
+  get_fluxmean(lat, lon, alti, energy, s, ip[])
 end
 
 function get_fluxmean_angdiff_factor(lat::AbstractVector{Float64}, lon::AbstractVector{Float64}, alti::Float64, energy::Float64, s::Float64, angle::Float64)

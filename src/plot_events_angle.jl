@@ -49,8 +49,8 @@ elseif (target == :Crab)
 elseif (target == :all)
   bin_max = 5e-2
   energy = range(1e-2, stop=5e-2, length=20000)
-  y_max = 1e5
-  y_min = 1e-3
+  # y_max = 1e5
+  # y_min = 1e-3
 else
   error("Unsupported target: $target")
 end
@@ -94,12 +94,12 @@ elseif target == :e || target == :p
 elseif target == :all
   ParmaAnalysis.ip[] = 31
   material = :cadmium
-  plot_detected_events!(ax, energy, latitude, longitude, material, :e,
-    altitude=altitude, label="electron", n_bin=n_bin, dx=0.000005, thickness=0.1, area=100., bin_max=bin_max, type=plot_type, color=:green)
+  (_, events_electron_angle) = plot_detected_events_photon_angle!(ax, energy, latitude, longitude, zenith,
+    altitude=altitude, label="electron 〜$(@sprintf("%.1f", zenith[end] * 180 / π))°", n_bin=n_bin, area=100., bin_max=bin_max, type=plot_type)
   ParmaAnalysis.ip[] = 1
   material = :silver
-  plot_detected_events!(ax, energy, latitude, longitude, material, :p,
-    altitude=altitude, label="proton", n_bin=n_bin, dx=0.000005, thickness=0.1, area=100., bin_max=bin_max, type=plot_type, color=:red)
+  (_, events_proton_angle) = plot_detected_events_photon_angle!(ax, energy, latitude, longitude, zenith,
+    altitude=altitude, label="proton 〜$(@sprintf("%.1f", zenith[end] * 180 / π))°", n_bin=n_bin, area=100., bin_max=bin_max, type=plot_type)
   ParmaAnalysis.ip[] = 33
   material = :cadmium
   (_, events_photon_angle) = plot_detected_events_photon_angle!(ax, energy, latitude, longitude, zenith,
@@ -114,6 +114,9 @@ end
 # Label(fig[1, :, Top()], title, fontsize=22, padding=(0, 0, 10, 0))
 println(title)
 
+
+println(events_electron_angle)
+println(events_proton_angle)
 println(events_photon_angle)
 
 filename = (target == :all ? "detected_events_angle_all" : "detected_events_angle_$(target)_$(material)") * ".png"

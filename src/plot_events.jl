@@ -90,24 +90,24 @@ elseif target == :e || target == :p
   println("Local minimum detected energy for $material with target $target: $local_minimum_detected_energy MeV")
   println("Local maximum detected energy for $material with target $target: $local_maximum_detected_energy MeV")
   vlines!(ax, [local_minimum_detected_energy, local_maximum_detected_energy], color=:red)
-elseif target == :al  l
+elseif target == :all
   ParmaAnalysis.ip[] = 31
   material = :cadmium
-  (_,events_e) = plot_detected_events!(ax, energy, latitude, longitude, material, :e,
+  _, events_e = plot_detected_events!(ax, energy, latitude, longitude, material, :e,
     altitude=altitude, label="electron", n_bin=n_bin, dx=0.000005, thickness=0.1, area=100., bin_max=bin_max, type=plot_type, color=:green, exposure_time=time)
   ParmaAnalysis.ip[] = 1
   material = :silver
-  (_,events_p) = plot_detected_events!(ax, energy, latitude, longitude, material, :p,
+  _, events_p = plot_detected_events!(ax, energy, latitude, longitude, material, :p,
     altitude=altitude, label="proton", n_bin=n_bin, dx=0.000005, thickness=0.1, area=100., bin_max=bin_max, type=plot_type, color=:red, exposure_time=time)
   ParmaAnalysis.ip[] = 33
   material = :cadmium
-  (_, events_albedo) = plot_detected_events_photon!(ax, energy, latitude, longitude,
+  _, events_albedo = plot_detected_events_photon!(ax, energy, latitude, longitude,
     altitude=altitude, label="albedo photon", n_bin=n_bin, area=100., bin_max=bin_max, type=plot_type, color=:orange)
-  energy_crab = range(5e-3, stop=bin_max, length=energy.len)
+  # energy_crab = range(5e-3, stop=bin_max, length=energy.len)
   # label = "Crab ($(@sprintf("%.1f", telescope_magnification))x)"
-  (_, evetnts_crab) = plot_detected_events_crab!(ax, energy_crab, altitude=altitude, label="Crab photon", n_bin=n_bin, area=100., bin_max=bin_max, type=plot_type, magnification=telescope_magnification, exposure_time=time)
+  _, events_crab = plot_detected_events_crab!(ax, energy, altitude=altitude, label="Crab photon", n_bin=n_bin, area=100., bin_max=bin_max, type=plot_type, magnification=telescope_magnification, exposure_time=time)
   material = :cadmium
-  (_, events_photon) = plot_detected_events_photon_albedo_crab!(ax, energy, latitude, longitude,
+  _, events_photon = plot_detected_events_photon_albedo_crab!(ax, energy, latitude, longitude,
     altitude=altitude, label="albedo + Crab", n_bin=n_bin, area=100., bin_max=bin_max, type=plot_type, color=:blue, magnification=telescope_magnification, exposure_time=time)
   Legend(fig[:, 2], ax)
 else
@@ -115,7 +115,7 @@ else
 end
 # Label(fig[1, :, Top()], title, fontsize=22, padding=(0, 0, 10, 0))
 println(title)
-println(events_e , ", ", events_p, ", ", events_albedo, ", ", evetnts_crab, ", ", events_photon, ", ", evetnts_crab + events_albedo)
+println(events_e, ", ", events_p, ", ", events_albedo, ", ", events_crab, ", ", events_photon, ", ", events_crab + events_albedo)
 
 
 filename = (target == :all ? "detected_events_all" : "detected_events_$(target)_$(material)") * ".png"
