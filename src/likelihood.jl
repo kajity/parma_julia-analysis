@@ -11,15 +11,15 @@ using Optim
 
 # use_random = true
 use_random = false
-time = 0.5 # in seconds
+time = 0.1 # in seconds
 n_bin = 81
 
+telescope_magnification = 30.
+# telescope_magnification = 1.
 
 target = :all
 plot_type = :stairs
 
-# telescope_magnification = 30.
-telescope_magnification = 1.
 bin_max = 5e-2
 energy = range(1e-2, stop=5e-2, length=20000)
 
@@ -28,15 +28,15 @@ longitude = [-104.0]
 altitude = 20.0
 
 
-_, events_e, _ = get_binned_events_data(energy, latitude, longitude, :e; altitude=altitude, n_bin=n_bin, area=100., bin_max=bin_max, exposure_time=time)
-_, events_p, _ = get_binned_events_data(energy, latitude, longitude, :p; altitude=altitude, n_bin=n_bin, area=100., bin_max=bin_max, exposure_time=time)
-_, events_albedo, _ = get_binned_events_data(energy, latitude, longitude, :photon; altitude=altitude, n_bin=n_bin, area=100., bin_max=bin_max, exposure_time=time)
-_, events_crab, _ = get_binned_events_data(energy, latitude, longitude, :Crab; altitude=altitude, n_bin=n_bin, area=100., bin_max=bin_max, exposure_time=time)
+_, events_e = get_binned_events_data(energy, latitude, longitude, :e; altitude=altitude, n_bin=n_bin, area=100., bin_max=bin_max, exposure_time=time)
+_, events_p = get_binned_events_data(energy, latitude, longitude, :p; altitude=altitude, n_bin=n_bin, area=100., bin_max=bin_max, exposure_time=time)
+_, events_albedo = get_binned_events_data(energy, latitude, longitude, :photon; altitude=altitude, n_bin=n_bin, area=100., bin_max=bin_max, exposure_time=time)
+_, events_crab = get_binned_events_data(energy, latitude, longitude, :Crab; altitude=altitude, n_bin=n_bin, area=100., bin_max=bin_max, exposure_time=time)
 
 println("time: $time s, n_bin: $n_bin")
 
 b = events_e + events_p + events_albedo
-s = events_crab
+s = events_crab .* telescope_magnification
 
 println(sum(events_e), ", ", sum(events_p), ", ", sum(events_albedo), ", ", sum(events_crab))
 println(sum(b), ", ", sum(s), ", ", sum(b) + sum(s))
@@ -76,7 +76,10 @@ q_0 = -2 * (ln_L(0.0) - ln_L(mu_hat))
 p = cdf(Normal(), -sqrt(q_0))
 Z = sqrt(q_0)
 
-println("TS = $q_0, p-value = $p, Z = $Z")
+println("TS = $q_0, p-value = $p, Z = $Z, s = $(sum(s)), b = $(sum(b)), n_obs = $(sum(n_obs))")
+
+Z = sum(s) / sqrt(sum(b))
+println("Z (simple) = $Z")
 
 # x = range(0, stop=2.0, length=200)
 # y = ln_L.(x)

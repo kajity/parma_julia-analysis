@@ -28,7 +28,7 @@ energy = []
 if (target == :e)
   ParmaAnalysis.ip[] = 31
   material = :cadmium
-  n_bin = 100
+  n_bin = 101
   bin_max = 1e0
   energy = range(1e-2, stop=1e1, length=20000)
 elseif (target == :p)
@@ -110,16 +110,16 @@ elseif target == :all
   _, events_photon = plot_detected_events_photon_albedo_crab!(ax, energy, latitude, longitude,
     altitude=altitude, label="albedo + Crab", n_bin=n_bin, area=100., bin_max=bin_max, type=plot_type, color=:blue, magnification=telescope_magnification, exposure_time=time)
   Legend(fig[:, 2], ax)
+  println(events_e, ", ", events_p, ", ", events_albedo, ", ", events_crab, ", ", events_photon, ", ", events_crab + events_albedo)
 else
   error("Unsupported target: $target")
 end
 # Label(fig[1, :, Top()], title, fontsize=22, padding=(0, 0, 10, 0))
 println(title)
-println(events_e, ", ", events_p, ", ", events_albedo, ", ", events_crab, ", ", events_photon, ", ", events_crab + events_albedo)
 
 
 filename = (target == :all ? "detected_events_all" : "detected_events_$(target)_$(material)") * ".png"
-save(joinpath(@__DIR__, "..", "figures", filename), fig)
+# save(joinpath(@__DIR__, "..", "figures", filename), fig)
 
 fig
 
