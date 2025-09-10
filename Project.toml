@@ -1,4 +1,5 @@
 [deps]
 Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
+Optim = "429524aa-4258-5aef-a3af-852621145aeb"
 ParmaAnalysis = "d03cd0bc-a753-4924-923b-0aac4c3d0df5"
 SpecialFunctions = "276daf66-3868-5448-9aa4-cd146d93841b"
