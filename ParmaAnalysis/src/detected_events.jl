@@ -12,6 +12,8 @@ end
 function plot_detected_events!(ax, energy, latitude, longitude, material::Symbol, target::Symbol; x_end=20., altitude=20.0, n_bin=64, area=100., label="", color=:auto, dx=0.000005, iteration=nothing, thickness=15.0, bin_max=20.0, type=:line, exposure_time=1000.0,)
     s = getHP(iyear[], imonth[], iday[]) # W-index (solar activity)
 
+    println("Calculating detected events for $target with material $material...")
+
     energy_keV, events, events_sum = get_binned_events_data(energy, latitude, longitude, target; material=material, altitude=altitude, n_bin=n_bin, area=area, dx=dx, iteration=iteration, thickness=thickness, bin_max=bin_max, exposure_time=exposure_time)
 
     if type == :stairs
@@ -36,6 +38,8 @@ end
 function plot_detected_events_photon!(ax, energy, latitude, longitude; altitude=20.0, n_bin=64, area=100., label="", color=:auto, bin_max=20.0, type=:line, exposure_time=1000.0)
     s = getHP(iyear[], imonth[], iday[]) # W-index (solar activity)
     events_sum = 0.0
+
+    println("Calculating detected events for photon...")
 
     if type == :stairs
         energy_keV, events, events_sum = get_binned_events_data(energy, latitude, longitude, :photon; altitude=altitude, n_bin=n_bin, area=area, bin_max=bin_max, exposure_time=exposure_time)
@@ -67,6 +71,7 @@ function plot_detected_events_crab!(ax, energy; altitude=20.0, n_bin=64, area=10
     s = getHP(iyear[], imonth[], iday[]) # W-index (solar activity)
     events_sum = 0.0
 
+        println("Calculating detected events for Crab...")
 
     if type == :stairs
         energy_keV, events, events_sum = get_binned_events_data(energy, [], [], :Crab; altitude=altitude, n_bin=n_bin, area=area, bin_max=bin_max, exposure_time=exposure_time)
@@ -154,6 +159,8 @@ function plot_detected_events_photon_albedo_crab!(ax, energy, latitude, longitud
     s = getHP(iyear[], imonth[], iday[]) # W-index (solar activity)
     events_sum = 0.0
 
+    println("Calculating detected events for albedo and Crab photon...")
+
     if type == :stairs
         energy_keV, events_Crab, events_sum_Crab = get_binned_events_data(energy, latitude, longitude, :Crab; altitude=altitude, n_bin=n_bin, area=area, bin_max=bin_max, exposure_time=exposure_time)
         _, events_albedo, events_sum_albedo = get_binned_events_data(energy, latitude, longitude, :photon; altitude=altitude, n_bin=n_bin, area=area, bin_max=bin_max, exposure_time=exposure_time)
@@ -222,7 +229,7 @@ function get_binned_events_data(energy, latitude, longitude, target::Symbol; mat
         end
     end
 
-    println("Calculating detected events for $target with material $material...")
+    # println("Calculating detected events for $target with material $material...")
     energy_events = StructArray{EnergyEvents}(energy=range(1e-2, stop=bin_max, length=n_bin), events=zeros(n_bin))
 
     for i in 1:lastindex(energy)-1
